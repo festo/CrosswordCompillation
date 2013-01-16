@@ -1,5 +1,5 @@
 /**
- * @author festo
+ * @author Munkácsy Gergely
  *
  */
 public class Gerda {
