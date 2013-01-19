@@ -14,19 +14,29 @@ public class Grid {
 	public Grid() {
 		this.height = 0;
 		this.width = 0;
+		this.columns = new ArrayList<Column>();
 
+	}
+	
+	public int getHeight() {
+		return this.height;
+	}
+	
+	public int getWidth() {
+		return this.width;
 	}
 	
 	public void loadGrid(String filename) throws IOException {
 		BufferedReader in = new BufferedReader( new FileReader(filename));
 		String line;
+		String[] lineArray;
 		
 		// Eslo ket sor a grid merete, szelesseg, magassag
 		this.width = Integer.parseInt(in.readLine());
 		this.height = Integer.parseInt(in.readLine());
 		
 		while((line = in.readLine())!= null) {
-			String[] lineArray = line.split(" ");
+			lineArray = line.split(" ");
 			Column c = new Column();
 			
 			c.setStartX(Integer.parseInt(lineArray[0]));
