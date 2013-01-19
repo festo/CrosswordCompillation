@@ -15,6 +15,10 @@ public class Column {
 	 */
 	private boolean isVertical = true;
 	
+	public Column() {
+		
+	}
+	
 	/**
 	 * @return the isVertical
 	 */
@@ -65,6 +69,7 @@ public class Column {
 	 */
 	public void setLength(int length) {
 		this.length = length;
-	}	
+		this.freeSpaces = length;
+	}
 
 }
