@@ -1,5 +1,8 @@
 import java.io.*; 
 import java.util.ArrayList;
+import java.util.Arrays;
+
+import javax.swing.text.html.HTMLDocument.Iterator;
 
 /**
  * @author Munkácsy Gergely
@@ -10,6 +13,7 @@ public class Grid {
 	private int height;
 	private int width;
 	private ArrayList<Column> columns;
+	private ArrayList<int[]>[][] gridMatrix;
 	
 	public Grid() {
 		this.height = 0;
@@ -26,7 +30,41 @@ public class Grid {
 		return this.width;
 	}
 	
-	public void loadGrid(String filename) throws IOException {
+	@SuppressWarnings("unchecked")
+	public void init(String filename) throws IOException {
+		
+		this.loadGrid(filename);
+		
+		gridMatrix = new ArrayList[this.width][this.height];
+		
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				gridMatrix[i][j] = new ArrayList<int[]>();
+			}
+		}
+		
+		Column c;
+		int x,y;
+		int[] pair = new int[2];
+		for (int i = 0; i < this.columns.size(); i++) {
+			c = this.columns.get(i);
+			x = c.getStartX();
+			y = c.getStartY();
+			for (int j = 0; j < c.getLength(); j++) {
+				pair[0] = i;
+				pair[1] = j;
+				gridMatrix[x][y].add(pair);
+				if(c.isVertical()) {
+					x++;
+				} else {
+					y++;
+				}
+			}
+		}
+		
+	}
+	
+	private void loadGrid(String filename) throws IOException {
 		BufferedReader in = new BufferedReader( new FileReader(filename));
 		String line;
 		String[] lineArray;
@@ -55,6 +93,23 @@ public class Grid {
 		in.close();
 	}
 	
+	public void setChar(int x, int y, char ch) {
+		int[] pair = new int[2];
+		
+		for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
+			pair = this.gridMatrix[x][y].get(i);
+			this.columns.get(pair[0]).setChar(pair[1], ch);
+		}
+	}
 	
+	/**
+	 * Debug functions
+	 */
+	
+	public void showColumns() {
+		for (Column c : this.columns) {
+			System.out.println(c);
+		}
+	}
 
 }

@@ -14,7 +14,11 @@ public class Gerda {
 		// TODO Auto-generated method stub
 		
 		Grid grid = new Grid();
-		grid.loadGrid("src/grids/grid1.txt");
+		grid.init("src/grids/grid1.txt");
+		
+		grid.setChar(0, 0, 'A');
+		
+		grid.showColumns();
 
 	}
 

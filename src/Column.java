@@ -1,4 +1,5 @@
-import com.sun.org.apache.xpath.internal.operations.String;
+import java.util.Arrays;
+import java.lang.String;
 
 /**
  * @author Munkácsy Gergely
@@ -16,7 +17,11 @@ public class Column {
 	private boolean isVertical = true;
 	
 	public Column() {
-		
+		this.startX = 0;
+		this.startY = 0;
+		this.length = 0;
+		this.freeSpaces = 0;
+		this.word = new char[this.maxLengthOfWord];   
 	}
 	
 	/**
@@ -31,8 +36,9 @@ public class Column {
 	public void setVertical(boolean isVertical) {
 		this.isVertical = isVertical;
 	}
-	static final int maxLengthOfColumn = 20;
-	private String word;
+	
+	private char[] word;
+	private final int maxLengthOfWord = 20; 
 	
 	/**
 	 * @return the startX
@@ -72,4 +78,26 @@ public class Column {
 		this.freeSpaces = length;
 	}
 
+	public boolean setChar(int i, char c) {
+		if( (this.length-1) < i ) {
+			this.word[i] = c;
+			this.freeSpaces--;
+			return true;
+		} else {
+			return false;	
+		}
+	}
+	
+	public char getChar(int i) {
+		return this.word[i];
+	}
+
+	@Override
+	public String toString() {
+		return "Column [startX=" + startX + ", startY=" + startY + ", length="
+				+ length + ", freeSpaces=" + freeSpaces + ", isVertical="
+				+ isVertical + ", word=" + Arrays.toString(word) + "]";
+	}
+	
+	
 }
