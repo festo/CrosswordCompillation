@@ -45,12 +45,13 @@ public class Grid {
 		
 		Column c;
 		int x,y;
-		int[] pair = new int[2];
+		int[] pair;
 		for (int i = 0; i < this.columns.size(); i++) {
 			c = this.columns.get(i);
 			x = c.getStartX();
 			y = c.getStartY();
 			for (int j = 0; j < c.getLength(); j++) {
+				pair = new int[2];
 				pair[0] = i;
 				pair[1] = j;
 				gridMatrix[x][y].add(pair);

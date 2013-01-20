@@ -17,7 +17,8 @@ public class Gerda {
 		grid.init("src/grids/grid1.txt");
 		
 		grid.setChar(0, 0, 'A');
-		
+		grid.setChar(1, 1, 'B');
+				
 		grid.showColumns();
 
 	}

@@ -11,17 +11,19 @@ public class Column {
 	private int startY;
 	private int length;
 	private int freeSpaces;
-	/**
-	 * Vizszintes hasab
-	 */
 	private boolean isVertical = true;
+	private char[] word;
+	private final int maxLengthOfWord = 20; 
 	
 	public Column() {
 		this.startX = 0;
 		this.startY = 0;
 		this.length = 0;
 		this.freeSpaces = 0;
-		this.word = new char[this.maxLengthOfWord];   
+		this.word = new char[this.maxLengthOfWord];
+		for (int i = 0; i < this.maxLengthOfWord; i++) {
+			this.word[i] = ' ';
+		}
 	}
 	
 	/**
@@ -36,9 +38,6 @@ public class Column {
 	public void setVertical(boolean isVertical) {
 		this.isVertical = isVertical;
 	}
-	
-	private char[] word;
-	private final int maxLengthOfWord = 20; 
 	
 	/**
 	 * @return the startX
@@ -78,18 +77,17 @@ public class Column {
 		this.freeSpaces = length;
 	}
 
-	public boolean setChar(int i, char c) {
-		if( (this.length-1) < i ) {
-			this.word[i] = c;
-			this.freeSpaces--;
-			return true;
-		} else {
-			return false;	
-		}
+	public void setChar(int i, char c) {
+		this.word[i] = c;
+		this.freeSpaces--;
 	}
 	
 	public char getChar(int i) {
 		return this.word[i];
+	}
+	
+	public String getWord() {
+		return new String(word);
 	}
 
 	@Override
