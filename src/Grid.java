@@ -14,7 +14,8 @@ public class Grid {
 	private int width;
 	private ArrayList<Column> columns;
 	private ArrayList<int[]>[][] gridMatrix;
-	private int[][] shape; 
+	private int[][] shape;
+	private int[][] indexes; 
 	private char[][] chars;
 	
 	public Grid() {
@@ -40,6 +41,7 @@ public class Grid {
 		gridMatrix = new ArrayList[this.width][this.height];
 		shape = new int[this.width][this.height];
 		chars = new char[this.width][this.height];
+		indexes = new int[this.width][this.height];
 				
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
@@ -51,10 +53,15 @@ public class Grid {
 		Column c;
 		int x,y;
 		int[] pair;
+		int count = 1;
 		for (int i = 0; i < this.columns.size(); i++) {
 			c = this.columns.get(i);
 			x = c.getStartX();
 			y = c.getStartY();
+			if(indexes[x][y] == 0) {
+				indexes[x][y] = count;
+				count++;
+			}
 			for (int j = 0; j < c.getLength(); j++) {
 				pair = new int[2];
 				pair[0] = i;  // Hanyadik hasab
@@ -118,6 +125,10 @@ public class Grid {
 	
 	public int[][] getShape() {
 		return shape;
+	}
+	
+	public int[][] getIndexes() {
+		return indexes;
 	}
 	
 	public char[][] getChars() {

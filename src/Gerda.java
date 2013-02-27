@@ -36,5 +36,9 @@ public class Gerda {
 	public static int[][] getShape() {
 		return grid.getShape();
 	}
+	
+	public static int[][] getIndexes() {
+		return grid.getIndexes();
+	}
 
 }

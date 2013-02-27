@@ -1,5 +1,8 @@
 import java.awt.*;
+
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 
 public class GUI extends JFrame {
 	
@@ -7,6 +10,8 @@ public class GUI extends JFrame {
 	private static JPanel table;
 	private JButton[][] grid;
 	private int SIZE = 11;
+	
+	private int[][] indexes;
 	
 	/** A tabla szelessege */
 	public static final int WIDTH = 600;
@@ -61,18 +66,28 @@ public class GUI extends JFrame {
 		frame = new JFrame();
 		table = new JPanel();
 		grid = new JButton[SIZE][SIZE];
+		indexes = Gerda.getIndexes();
 		
 	}
 	
 	public void makeTable(){
 		int[][] shape = Gerda.getShape();
 		
+		Border thickBorder = new LineBorder(Color.BLACK, 1);
+		
         for(int y=0; y<SIZE; y++){
           	for(int x=0; x<SIZE; x++){
            		grid[x][y]=new JButton(""); //gomb letrehozasa
-            	grid[x][y].setPreferredSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));	//beallitjuk a meretet az ablak fuggvenyeben
-            	grid[x][y].setMinimumSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));
-            	//grid[x][y].addActionListener(this);	//ActionListenert adunk hozza
+//            	grid[x][y].setPreferredSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));	//beallitjuk a meretet az ablak fuggvenyeben
+//            	grid[x][y].setMinimumSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));
+//            	
+            	grid[x][y].setPreferredSize(new Dimension(40,40));	//beallitjuk a meretet az ablak fuggvenyeben
+            	grid[x][y].setMinimumSize(new Dimension(40,40));
+            	
+            	
+            	grid[x][y].setBorder(thickBorder);
+            	grid[x][y].setFocusPainted(false);
+            	
             	grid[x][y].setMargin(new Insets(0, 0, 0, 0));	//margot 0-ra allitjuk
             	
             	if(shape[x][y] == 1) {
@@ -92,10 +107,14 @@ public class GUI extends JFrame {
 	public void paintCells() {
 		char chars[][];
 		chars = Gerda.getChars();
+		String label;
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){
-            	//grid[x][y].setText(""+chars[x][y]);
-            	grid[x][y].setText("<html><table><tr>"+0+"</tr><tr>"+chars[x][y]+"</tr></table></html>");
+            	label = "";
+            	if(indexes[x][y] != 0) {
+            		label = ""+indexes[x][y];
+            	}
+            	grid[x][y].setText("<html><table style=\"width:30px;height:30px\"><tr>"+label+"</tr><tr>"+chars[x][y]+"</tr></table></html>");
             }
 		}
 	}
