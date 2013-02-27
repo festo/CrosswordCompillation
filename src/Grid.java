@@ -14,6 +14,8 @@ public class Grid {
 	private int width;
 	private ArrayList<Column> columns;
 	private ArrayList<int[]>[][] gridMatrix;
+	private int[][] shape; 
+	private char[][] chars;
 	
 	public Grid() {
 		this.height = 0;
@@ -36,10 +38,13 @@ public class Grid {
 		this.loadGrid(filename);
 		
 		gridMatrix = new ArrayList[this.width][this.height];
-		
+		shape = new int[this.width][this.height];
+		chars = new char[this.width][this.height];
+				
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				gridMatrix[i][j] = new ArrayList<int[]>();
+				shape[i][j] = 0;
 			}
 		}
 		
@@ -52,9 +57,10 @@ public class Grid {
 			y = c.getStartY();
 			for (int j = 0; j < c.getLength(); j++) {
 				pair = new int[2];
-				pair[0] = i;
-				pair[1] = j;
+				pair[0] = i;  // Hanyadik hasab
+				pair[1] = j;  // Hanyadik betuje
 				gridMatrix[x][y].add(pair);
+				shape[x][y] = 1;
 				if(c.isVertical()) {
 					x++;
 				} else {
@@ -101,6 +107,21 @@ public class Grid {
 			pair = this.gridMatrix[x][y].get(i);
 			this.columns.get(pair[0]).setChar(pair[1], ch);
 		}
+		chars[x][y] = ch;
+	}
+	
+	public char getChar(int x, int y) {
+		int[] pair = new int[2];
+		pair = this.gridMatrix[x][y].get(0);
+		return this.columns.get(pair[0]).getChar(pair[1]);
+	}
+	
+	public int[][] getShape() {
+		return shape;
+	}
+	
+	public char[][] getChars() {
+		return chars;
 	}
 	
 	/**
