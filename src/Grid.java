@@ -17,6 +17,7 @@ public class Grid {
 	private int[][] shape;
 	private int[][] indexes; 
 	private char[][] chars;
+	private int[] lengthStat;
 	
 	public Grid() {
 		this.height = 0;
@@ -35,6 +36,8 @@ public class Grid {
 	
 	@SuppressWarnings("unchecked")
 	public void init(String filename) throws IOException {
+		
+		lengthStat = new int[Settings.MAX_WORD_LENGTH];
 		
 		this.loadGrid(filename);
 		
@@ -102,6 +105,7 @@ public class Grid {
 			}
 			
 			this.columns.add(c);
+			lengthStat[c.getLength()]++;
 		}
 		
 		in.close();
@@ -135,13 +139,20 @@ public class Grid {
 		return chars;
 	}
 	
+	public int[] getLenthStat() {
+		return lengthStat;
+	}
+	
 	/**
 	 * Debug functions
 	 */
 	
-	public void showColumns() {
-		for (Column c : this.columns) {
-			System.out.println(c);
+	public void debug() {
+//		for (Column c : this.columns) {
+//			System.out.println(c);
+//		}
+		for (int i = 0; i < lengthStat.length; i++) {
+			System.out.println(lengthStat[i]);
 		}
 	}
 

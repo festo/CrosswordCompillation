@@ -114,7 +114,8 @@ public class GUI extends JFrame {
             	if(indexes[x][y] != 0) {
             		label = ""+indexes[x][y];
             	}
-            	grid[x][y].setText("<html><table style=\"width:30px;height:30px\"><tr>"+label+"</tr><tr>"+chars[x][y]+"</tr></table></html>");
+//            	grid[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr style=\"font-size: 18px;margin:0;padding:0;\">"+chars[x][y]+"</tr></table></html>");
+            	grid[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr>"+chars[x][y]+"</tr></table></html>");
             }
 		}
 	}

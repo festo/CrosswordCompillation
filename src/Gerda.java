@@ -23,8 +23,8 @@ public class Gerda {
 		grid.setChar(0, 0, 'A');
 		grid.setChar(1, 1, 'B');
 				
-		grid.showColumns();
-				
+		grid.debug();
+						
 		GUI.createAndShowGUI();
 
 	}
