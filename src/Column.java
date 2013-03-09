@@ -13,15 +13,14 @@ public class Column {
 	private int freeSpaces;
 	private boolean isVertical = true;
 	private char[] word;
-	private final int maxLengthOfWord = 20; 
 	
 	public Column() {
 		this.startX = 0;
 		this.startY = 0;
 		this.length = 0;
 		this.freeSpaces = 0;
-		this.word = new char[this.maxLengthOfWord];
-		for (int i = 0; i < this.maxLengthOfWord; i++) {
+		this.word = new char[Settings.MAX_WORD_LENGTH];
+		for (int i = 0; i < Settings.MAX_WORD_LENGTH; i++) {
 			this.word[i] = ' ';
 		}
 	}

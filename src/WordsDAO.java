@@ -1,14 +1,45 @@
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 public class WordsDAO {
 	private int[] lengthStat;
-	private static final String dbfile = "dictonaries.db";
-	private Connection conn = null;
-	private Connection memoryConn = null;
+	private static final String dbfile = "database/dictonaries.db";
+	private static String dbtable = "eng_hun";
+	private Connection connection = null;
+	private Connection memoryConnection = null;
+	
+	private static final String SQL_createTable = "CREATE TABLE `words` (" +
+														"id integer primary key, " +
+														"answer varchar(19), " +
+														"length integer, " +														
+														"c1 char, " +
+														"c2 char, " +
+														"c3 char, " +
+														"c4 char, " +
+														"c5 char, " +
+														"c6 char, " +
+														"c7 char, " +
+														"c8 char, " +
+														"c9 char, " +
+														"c10 char, " +
+														"c11 char, " +
+														"c12 char, " +
+														"c13 char, " +
+														"c14 char, " +
+														"c15 char, " +
+														"c16 char, " +
+														"c17 char, " +
+														"c18 char, " +
+														"c19 char) ";
+	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19)";
+	private static final String SQL_clearMemory = "DELETE * FROM words";
+	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? ORDER BY RANDOM() LIMIT "+Settings.MAX_WORD_COUNT;
 	
 	public WordsDAO() {
 		try {
@@ -16,20 +47,145 @@ public class WordsDAO {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} 
-		init();
+		createMemoryTable();
 	}
 	
-	public void init() {
+	private void connectToDatabase() throws SQLException {
+		if (connection == null || connection.isClosed())
+			connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
+	}
+	
+	private void connectToMemory() throws SQLException {
+		if (memoryConnection == null || memoryConnection.isClosed())
+			memoryConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
+	}
+	
+	public void createMemoryTable() {
 		try {
-			conn = DriverManager.getConnection("jdbc:sqlite:"+dbfile);	
+			connectToMemory();
+			
+			Statement statement = memoryConnection.createStatement();
+			statement.executeUpdate(SQL_createTable);
+			statement.executeUpdate(SQL_addIndexes);
+		    
 		} catch(SQLException e) {
-		      // if the error message is "out of memory", 
-		      // it probably means no database file is found
 		      System.err.println(e.getMessage());
+		} finally {
+			try {
+				if(memoryConnection != null)
+					memoryConnection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
+	}
+	
+	public void clearMemory() {
+		try {
+			
+			connectToMemory();
+			
+			Statement statement = memoryConnection.createStatement();
+			statement.executeUpdate(SQL_clearMemory);
+			
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		} finally {
+			try {
+				if(memoryConnection != null)
+					memoryConnection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private ArrayList<Word> selectFromDatabase(int length) {
+		PreparedStatement pst = null;
+		ArrayList<Word> words = new ArrayList<Word>();
+		try {
+			connectToDatabase();
+			pst = connection.prepareStatement(SQL_selectFromDatabase);
+			int index = 1;
+			pst.setInt(index++, length);
+			ResultSet rs = pst.executeQuery();
+			int id = 0;
+			String answer = null;
+			while(rs.next()) {
+				id = rs.getInt("id");
+				answer = rs.getString("answer");
+				Word w = new Word(id, answer);
+				words.add(w);
+		    }
+		      
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		} finally {
+			try {
+				if(connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		
-//		TODO: Adatbázis elkészítése
+		return words;
+	}
+	
+	public void fillTheMemory() {
+		String SQL_insertIntoMemory = null;
+		int j;
+		try {
+			connectToMemory();
+//			"insert into words (id, answer, length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19)";
+			Statement statement = memoryConnection.createStatement();
+			
+			for (int i = 0; i < lengthStat.length; i++) {
+				if(lengthStat[i] != 0) {
+					ArrayList<Word> words = selectFromDatabase(i);
+					
+					for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
+						Word w = (Word) iterator.next();
+						System.out.println(w);
+
+						SQL_insertIntoMemory = "insert into words (id, answer, length, ";
+						for (j = 0; j < w.getLength()-1; j++) {
+							SQL_insertIntoMemory += "c"+j+", ";
+						}
+//						j++;
+						SQL_insertIntoMemory += "c"+j+") VALUES ( ";
+						
+						SQL_insertIntoMemory += w.getId() + ", ";
+						SQL_insertIntoMemory += "'" + w.getAnswer() + "', ";
+						SQL_insertIntoMemory += w.getLength() + ", ";
+						
+						for (j = 0; j < w.getLength()-1; j++) {
+							SQL_insertIntoMemory += "'" + w.getChar(j) + "', ";
+						}
+						
+//						j++;
+						SQL_insertIntoMemory += "'" + w.getChar(j) + "' ";
+
+						SQL_insertIntoMemory += ")";
+//						System.out.println(SQL_insertIntoMemory);
+//						statement.executeUpdate(SQL_insertIntoMemory);
+
+					}
+					
+				}
+			}			
+		      
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		} finally {
+			try {
+				if(connection != null)
+					connection.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	public void setLengthStat(int[] ls) {

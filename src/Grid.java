@@ -1,8 +1,5 @@
 import java.io.*; 
 import java.util.ArrayList;
-import java.util.Arrays;
-
-import javax.swing.text.html.HTMLDocument.Iterator;
 
 /**
  * @author Munkácsy Gergely

@@ -24,9 +24,11 @@ public class Gerda {
 				
 //		grid.debug();
 						
-		GUI.createAndShowGUI();
+//		GUI.createAndShowGUI();
 		
 		WordsDAO words = new WordsDAO();
+		words.setLengthStat(getlengthStat());
+		words.fillTheMemory();
 
 	}
 	
@@ -40,6 +42,10 @@ public class Gerda {
 	
 	public static int[][] getIndexes() {
 		return grid.getIndexes();
+	}
+	
+	public static int[] getlengthStat() {
+		return grid.getLenthStat();
 	}
 
 }
