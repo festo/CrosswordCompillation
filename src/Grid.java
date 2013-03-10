@@ -185,7 +185,7 @@ public class Grid {
 		return chars;
 	}
 	
-	public int[] getLenthStat() {
+	public int[] getlengthStat() {
 		return lengthStat;
 	}
 	
