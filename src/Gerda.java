@@ -12,6 +12,7 @@ public class Gerda {
 	 */
 	
 	private static Grid grid;
+	private static WordsDAO words;
 	
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
@@ -19,16 +20,17 @@ public class Gerda {
 		grid = new Grid();
 		grid.init("src/grids/grid1.txt");
 		
-		grid.setChar(0, 0, 'A');
-		grid.setChar(1, 1, 'B');
+//		grid.setChar(1, 1, 'B');
 				
 //		grid.debug();
-						
-//		GUI.createAndShowGUI();
-		
-		WordsDAO words = new WordsDAO();
+								
+		words = new WordsDAO();
 		words.setLengthStat(getlengthStat());
 		words.fillTheMemory();
+		
+		firstStep();
+		
+		GUI.createAndShowGUI();
 
 	}
 	
@@ -46,6 +48,21 @@ public class Gerda {
 	
 	public static int[] getlengthStat() {
 		return grid.getLenthStat();
+	}
+	
+	/**
+	 * Az elso lepesben egy veletlenul kivalasztott rekordot toltunk ki
+	 */
+	public static void firstStep() {
+		// A leghosszab kivalasztasa
+		Column longest = grid.getLongest();
+		
+		// Egy megfelelo szo kereses
+		Word word = words.getWordByColumn(longest);
+		
+		// A racsaba beillesztese
+		grid.setWorToColumn(word, longest);
+		
 	}
 
 }

@@ -1,5 +1,6 @@
 import java.io.*; 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * @author Munkácsy Gergely
@@ -122,6 +123,54 @@ public class Grid {
 		int[] pair = new int[2];
 		pair = this.gridMatrix[x][y].get(0);
 		return this.columns.get(pair[0]).getChar(pair[1]);
+	}
+	
+	public void setWorToColumn(Word w, Column c) {
+		int x = c.getStartX();
+		int y = c.getStartY();
+		for (int i = 0; i < c.getLength(); i++) {
+			
+			setChar(x, y, w.getChar(i));
+			
+			if(c.isVertical()) {
+				x++;
+			} else {
+				y++;
+			}
+		}
+		
+		//Set ID
+		for (int i = 0; i < columns.size(); i++) {
+			if(columns.get(i).equals(c)) {
+				columns.get(i).setId(w.getId());
+			}
+		}
+	}
+	
+	/**
+	 * Veletlen random boolenan generator
+	 * @return veletlen igaz vagy hamis ertek
+	 */
+	public boolean getRandomBoolean() {
+	  return Math.random() < 0.5;
+	  
+	}
+
+	/*
+	 * Visszaadja a leghosszab hasabot. Ha tobb is egyforma hosszu akkor veletleneul valaszt egyet
+	 */
+	public Column getLongest() {
+		Column longest = columns.get(0); // Az elsonek keresunk hosszabbat
+		
+		for (int i = 1; i < columns.size(); i++) {
+			if(longest.getLength() < columns.get(i).getLength()) {
+				longest = columns.get(i);
+			} else if(longest.getLength() == columns.get(i).getLength() && getRandomBoolean()) {
+				longest = columns.get(i);
+			}
+		}
+		
+		return longest;
 	}
 	
 	public int[][] getShape() {

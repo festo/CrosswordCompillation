@@ -10,7 +10,7 @@ import java.util.Iterator;
 public class WordsDAO {
 	private int[] lengthStat;
 	private static final String dbfile = "database/dictonaries.db";
-	private static String dbtable = "eng_hun";
+	private static String dbtable = "hun_eng";
 	private Connection connection = null;
 	private Connection memoryConnection = null;
 	
@@ -185,6 +185,37 @@ public class WordsDAO {
 //				e.printStackTrace();
 //			}
 		}
+	}
+	
+	public Word getWordByColumn(Column c) {
+		Word w = null;
+		String SQL;
+		try {
+			connectToMemory();
+	
+			Statement statement = memoryConnection.createStatement();
+			
+			SQL = "select * from words where ";
+			
+			SQL += c.getSQL();
+			
+			SQL += " ORDER BY RANDOM() LIMIT 1";
+			
+			ResultSet rs = statement.executeQuery(SQL);
+			
+			int id = 0;
+			String answer = null;
+			while(rs.next()) {
+				id = rs.getInt("id");
+				answer = rs.getString("answer");
+				w = new Word(id, answer);
+		    }
+			
+			
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		}
+		return w;
 	}
 	
 	public void setLengthStat(int[] ls) {

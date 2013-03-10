@@ -13,16 +13,21 @@ public class Column {
 	private int freeSpaces;
 	private boolean isVertical = true;
 	private char[] word;
+	private int id;
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public Column() {
 		this.startX = 0;
 		this.startY = 0;
 		this.length = 0;
 		this.freeSpaces = 0;
-		this.word = new char[Settings.MAX_WORD_LENGTH];
-		for (int i = 0; i < Settings.MAX_WORD_LENGTH; i++) {
-			this.word[i] = ' ';
-		}
 	}
 	
 	/**
@@ -74,6 +79,10 @@ public class Column {
 	public void setLength(int length) {
 		this.length = length;
 		this.freeSpaces = length;
+		this.word = new char[this.length];
+		for (int i = 0; i < this.length; i++) {
+			this.word[i] = ' ';
+		}
 	}
 
 	public void setChar(int i, char c) {
@@ -87,6 +96,21 @@ public class Column {
 	
 	public String getWord() {
 		return new String(word);
+	}
+	
+	public String getSQL() {
+		String SQL = "";
+		for (int i = 0; i < word.length; i++) {
+			if(word[i] == ' ') {
+				SQL += "c"+ (i+1) +" like '_'";
+			} else {
+				SQL += "c"+ (i+1) +" like '"+word[i]+"'";
+			}
+			
+			if(i+1 != word.length)
+				SQL += " and ";
+		}
+		return SQL;
 	}
 
 	@Override
