@@ -14,7 +14,7 @@ public class WordsDAO {
 	private Connection connection = null;
 	private Connection memoryConnection = null;
 	
-	private static final String SQL_createTable = "CREATE TABLE `words` (" +
+	private static final String SQL_createTable = "CREATE TABLE words (" +
 														"id integer primary key, " +
 														"answer varchar(19), " +
 														"length integer, " +														
@@ -36,8 +36,8 @@ public class WordsDAO {
 														"c16 char, " +
 														"c17 char, " +
 														"c18 char, " +
-														"c19 char) ";
-	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19)";
+														"c19 char); ";
+	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
 	private static final String SQL_clearMemory = "DELETE * FROM words";
 	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? ORDER BY RANDOM() LIMIT "+Settings.MAX_WORD_COUNT;
 	
@@ -57,7 +57,8 @@ public class WordsDAO {
 	
 	private void connectToMemory() throws SQLException {
 		if (memoryConnection == null || memoryConnection.isClosed())
-			memoryConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
+			memoryConnection = DriverManager.getConnection("jdbc:sqlite:");
+//			memoryConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
 	}
 	
 	public void createMemoryTable() {
@@ -71,12 +72,12 @@ public class WordsDAO {
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
-			try {
-				if(memoryConnection != null)
-					memoryConnection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if(memoryConnection != null)
+//					memoryConnection.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
 		}
 		
 	}
@@ -147,10 +148,9 @@ public class WordsDAO {
 					
 					for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
 						Word w = (Word) iterator.next();
-						System.out.println(w);
 
 						SQL_insertIntoMemory = "insert into words (id, answer, length, ";
-						for (j = 0; j < w.getLength()-1; j++) {
+						for (j = 1; j < w.getLength(); j++) {
 							SQL_insertIntoMemory += "c"+j+", ";
 						}
 //						j++;
@@ -168,8 +168,7 @@ public class WordsDAO {
 						SQL_insertIntoMemory += "'" + w.getChar(j) + "' ";
 
 						SQL_insertIntoMemory += ")";
-//						System.out.println(SQL_insertIntoMemory);
-//						statement.executeUpdate(SQL_insertIntoMemory);
+						statement.executeUpdate(SQL_insertIntoMemory);
 
 					}
 					
@@ -179,12 +178,12 @@ public class WordsDAO {
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
-			try {
-				if(connection != null)
-					connection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if(connection != null)
+//					connection.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 	
