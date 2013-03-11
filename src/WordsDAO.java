@@ -197,9 +197,15 @@ public class WordsDAO {
 			
 			SQL = "select * from words where ";
 			
-			SQL += c.getSQL();
+			SQL += c.getSQL()+" ";
 			
-			SQL += " ORDER BY RANDOM() LIMIT 1";
+			for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
+				SQL += "and c"+ (i+1) +" is NULL ";
+			}
+			
+			SQL += "ORDER BY RANDOM() LIMIT 1";
+			
+//			System.out.println(SQL);
 			
 			ResultSet rs = statement.executeQuery(SQL);
 			
@@ -211,11 +217,35 @@ public class WordsDAO {
 				w = new Word(id, answer);
 		    }
 			
+			System.out.println(w);
+			
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		}
 		return w;
+	}
+	
+	public int getWordCountByColumn(Column c) {
+		int count = 0;
+		String SQL;
+		try {
+			connectToMemory();
+	
+			Statement statement = memoryConnection.createStatement();
+			
+			SQL = "select count(*) as db from words where ";
+			
+			SQL += c.getSQL();
+			
+			ResultSet rs = statement.executeQuery(SQL);
+			
+			count = rs.getInt("db");
+			
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		}
+		return count;
 	}
 	
 	public void setLengthStat(int[] ls) {

@@ -17,7 +17,8 @@ public class Core {
 		words.fillTheMemory();
 		
 		firstStep();
-//		GUI.refresh();
+		
+		grid = generate(grid);
 	}
 	
 	/**
@@ -33,6 +34,52 @@ public class Core {
 		// A racsaba beillesztese
 		grid.setWorToColumn(word, longest);
 		
+	}
+	
+	public Grid generate(Grid g) {
+		Grid base = g;
+		
+		// Kivalasztjuk a megfelelo oszlopot
+		Column bestColumn = getBestColumn(g);
+		Word bestWord = getBestWord(bestColumn);
+		System.out.println("Best column: "+bestColumn);
+		System.out.println("Best word: "+bestWord);
+		
+		if(bestWord != null) {
+			grid.setWorToColumn(bestWord, bestColumn);
+			return generate(g);
+		} else {
+			return base;
+		}
+		
+	}
+	
+	/*
+	 * Kiválasztjuk a legjobb oszlopot a beszurashoz.
+	 * Azt, amire a lehető legkevesebb kitöltés létezik.
+	 */
+	private Column getBestColumn(Grid g) {
+		Column c = new Column();
+		int minNumberOfWords = Settings.MAX_WORD_COUNT;
+		int numberOfWords;
+		// Az kell amiben a legkevesebb szabad hely van, de nem 0-a.
+		for (int i = 0; i < g.columns.size(); i++) {
+			if(g.columns.get(i).getFreeSpaces() != 0) {
+				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
+				if(g.columns.get(i).getFilledSpaaces() > c.getFilledSpaaces() || numberOfWords < minNumberOfWords) {
+					c = g.columns.get(i);
+//					System.out.println(numberOfWords + " < " + minNumberOfWords);
+					numberOfWords = minNumberOfWords;
+				}
+			}
+		}
+		
+		return c;
+	}
+	
+	//TODO: Ez nem a heurisztikának megfelelő
+	private Word getBestWord(Column c) {
+		return words.getWordByColumn(c);
 	}
 	
 }

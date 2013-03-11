@@ -10,7 +10,7 @@ public class Grid {
 	
 	private int height;
 	private int width;
-	private ArrayList<Column> columns;
+	public ArrayList<Column> columns;
 	private ArrayList<int[]>[][] gridMatrix;
 	private int[][] shape;
 	private int[][] indexes; 
@@ -143,6 +143,7 @@ public class Grid {
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).equals(c)) {
 				columns.get(i).setId(w.getId());
+				columns.get(i).setFilled(true);
 			}
 		}
 	}
@@ -188,6 +189,7 @@ public class Grid {
 	public int[] getlengthStat() {
 		return lengthStat;
 	}
+
 	
 	/**
 	 * Debug functions

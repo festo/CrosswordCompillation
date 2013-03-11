@@ -11,6 +11,7 @@ public class Column {
 	private int startY;
 	private int length;
 	private int freeSpaces;
+	private boolean isFilled;
 	private boolean isVertical = true;
 	private char[] word;
 	private int id;
@@ -28,6 +29,7 @@ public class Column {
 		this.startY = 0;
 		this.length = 0;
 		this.freeSpaces = 0;
+		this.isFilled = false;
 	}
 	
 	/**
@@ -87,7 +89,8 @@ public class Column {
 
 	public void setChar(int i, char c) {
 		this.word[i] = c;
-		this.freeSpaces--;
+		if(this.freeSpaces > 0)
+			this.freeSpaces--;
 	}
 	
 	public char getChar(int i) {
@@ -98,6 +101,22 @@ public class Column {
 		return new String(word);
 	}
 	
+	public int getFreeSpaces() {
+		return freeSpaces;
+	}
+	
+	public int getFilledSpaaces() {
+		return this.length - this.freeSpaces;
+	}
+
+	public boolean isFilled() {
+		return isFilled;
+	}
+
+	public void setFilled(boolean isFilled) {
+		this.isFilled = isFilled;
+	}
+
 	public String getSQL() {
 		String SQL = "";
 		for (int i = 0; i < word.length; i++) {

@@ -139,7 +139,6 @@ public class GUI extends JFrame implements ActionListener  {
 		}
 	}
 	
-	// TODO: Nem jo a frissites
 	public void refresh() {
 		paintCells();
 		for(int x=0; x<SIZE; x++){
