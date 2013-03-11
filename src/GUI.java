@@ -17,7 +17,7 @@ public class GUI extends JFrame implements ActionListener  {
 	private static int SIZE = 11;
 	private static Grid grid;
 	
-	private int[][] indexes;
+	private static int[][] indexes;
 	
 	/** A tabla szelessege */
 	public static final int WIDTH = 600;
@@ -123,7 +123,7 @@ public class GUI extends JFrame implements ActionListener  {
 		paintCells();
 	}
 	
-	public void paintCells() {
+	public static void paintCells() {
 		char chars[][];
 		chars = grid.getChars();
 		String label;
@@ -139,7 +139,7 @@ public class GUI extends JFrame implements ActionListener  {
 		}
 	}
 	
-	public void refresh() {
+	public static void refresh() {
 		paintCells();
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){

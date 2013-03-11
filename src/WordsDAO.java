@@ -119,6 +119,8 @@ public class WordsDAO {
 				Word w = new Word(id, answer);
 				words.add(w);
 		    }
+			
+			rs.close();
 		      
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
@@ -217,7 +219,9 @@ public class WordsDAO {
 				w = new Word(id, answer);
 		    }
 			
-			System.out.println(w);
+			rs.close();
+			
+//			System.out.println(w);
 			
 			
 		} catch(SQLException e) {
@@ -241,6 +245,7 @@ public class WordsDAO {
 			ResultSet rs = statement.executeQuery(SQL);
 			
 			count = rs.getInt("db");
+			rs.close();
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
