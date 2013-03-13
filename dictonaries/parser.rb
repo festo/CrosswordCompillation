@@ -23,7 +23,7 @@ DB.transaction do
         if read_key
           key = line
           read_key = false
-        elsif !(/('|-|!|\*|&|\\|,|\~|\.)/ =~ key.chomp) && !(/\s/ =~ key.chomp) && key.length > 2 && key.length < 21
+        elsif !(/('|-|!|\*|&|\\|,|„|”|™|\~|\.)/ =~ key.chomp) && !(/\s/ =~ key.chomp) && key.length > 2 && key.length < 21
           # 2 es 19 koze essen a hossz, length -1-el kell szamolni
           if !(/(~|<|>|\?)/ =~ line.chomp)
             # A valasz nem tartalmaz spec karaktereket

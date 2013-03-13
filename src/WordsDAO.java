@@ -39,7 +39,7 @@ public class WordsDAO {
 														"c19 char); ";
 	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
 	private static final String SQL_clearMemory = "DELETE * FROM words";
-	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? ORDER BY RANDOM() LIMIT "+Settings.MAX_WORD_COUNT;
+	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? ORDER BY RANDOM() LIMIT ?";
 	
 	public WordsDAO() {
 		try {
@@ -93,23 +93,49 @@ public class WordsDAO {
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
-			try {
-				if(memoryConnection != null)
-					memoryConnection.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+//			try {
+//				if(memoryConnection != null)
+//					memoryConnection.close();
+//			} catch (SQLException e) {
+//				e.printStackTrace();
+//			}
 		}
 	}
 	
-	private ArrayList<Word> selectFromDatabase(int length) {
+	private void memoryStat() {
+		System.out.println("-- Memory Database Statistics --");
+		try {
+			connectToMemory();
+			Statement statement = memoryConnection.createStatement();
+			
+			String SQL = "select length as length, count(id) as db from words group by length;";
+			int count = 0;
+			int length = 0;
+			ResultSet rs = statement.executeQuery(SQL);
+			while(rs.next()) {
+				length = rs.getInt("length");
+				count = rs.getInt("db");
+				System.out.println("Length: "+length+" Count: "+count);
+		    }
+			
+			rs.close();
+			
+		} catch(SQLException e) {
+		      System.err.println(e.getMessage());
+		}
+		System.out.println("-- End Memory Database Statistics --");
+	}
+	
+	private ArrayList<Word> selectFromDatabase(int length, int count) {
 		PreparedStatement pst = null;
 		ArrayList<Word> words = new ArrayList<Word>();
 		try {
 			connectToDatabase();
 			pst = connection.prepareStatement(SQL_selectFromDatabase);
 			int index = 1;
+			count *= Settings.MAX_WORD_COUNT;
 			pst.setInt(index++, length);
+			pst.setInt(index++, count);
 			ResultSet rs = pst.executeQuery();
 			int id = 0;
 			String answer = null;
@@ -146,7 +172,7 @@ public class WordsDAO {
 			
 			for (int i = 0; i < lengthStat.length; i++) {
 				if(lengthStat[i] != 0) {
-					ArrayList<Word> words = selectFromDatabase(i);
+					ArrayList<Word> words = selectFromDatabase(i, lengthStat[i]);
 					
 					for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
 						Word w = (Word) iterator.next();
@@ -187,6 +213,7 @@ public class WordsDAO {
 //				e.printStackTrace();
 //			}
 		}
+		memoryStat();
 	}
 	
 	public Word getWordByColumn(Column c) {

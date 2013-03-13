@@ -49,9 +49,9 @@ public class Core {
 			grid.setWorToColumn(bestWord, bestColumn);
 			GUI.refresh();
 			return generate(g);
-		} else {
-			return base;
 		}
+			return generate(base);
+		
 		
 	}
 	

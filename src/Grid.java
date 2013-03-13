@@ -1,6 +1,5 @@
 import java.io.*; 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 /**
  * @author Munkácsy Gergely
@@ -139,11 +138,11 @@ public class Grid {
 			}
 		}
 		
-		//Set ID
+		//Megkeressuk a megadott oszlopot majd beallitjuk a megfelelo ertekeket
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).equals(c)) {
-				columns.get(i).setId(w.getId());
-				columns.get(i).setFilled(true);
+				columns.get(i).setId(w.getId()); // Eltaroljuk az ID-t
+				columns.get(i).setFilled(true); // Megjeloljuk, hogy egy szovel lett kitoltva nem a cellak egyessevel
 			}
 		}
 	}

@@ -134,7 +134,7 @@ public class GUI extends JFrame implements ActionListener  {
             		label = ""+indexes[x][y];
             	}
 //            	grid[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr style=\"font-size: 18px;margin:0;padding:0;\">"+chars[x][y]+"</tr></table></html>");
-            	gridButtons[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr style=\"color: red;\">"+chars[x][y]+"</tr></table></html>");
+            	gridButtons[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 6px;\">"+label+"</tr><tr style=\"color: red;\">"+chars[x][y]+"</tr></table></html>");
             }
 		}
 	}
