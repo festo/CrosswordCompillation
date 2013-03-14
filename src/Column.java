@@ -88,9 +88,10 @@ public class Column {
 	}
 
 	public void setChar(int i, char c) {
-		this.word[i] = c;
-		if(this.freeSpaces > 0)
+		if(this.freeSpaces > 0 && word[i] == ' ')
 			this.freeSpaces--;
+		
+		this.word[i] = c;
 	}
 	
 	public char getChar(int i) {
@@ -118,6 +119,7 @@ public class Column {
 	}
 
 	public String getSQL() {
+//		System.out.println(Arrays.toString(word));
 		String SQL = "";
 		for (int i = 0; i < word.length; i++) {
 			if(word[i] == ' ') {
@@ -137,6 +139,12 @@ public class Column {
 		return "Column [startX=" + startX + ", startY=" + startY + ", length="
 				+ length + ", freeSpaces=" + freeSpaces + ", isVertical="
 				+ isVertical + ", word=" + Arrays.toString(word) + "]";
+	}
+
+	public void clear() {
+		this.isFilled = false;
+		this.id = 0;
+		
 	}
 	
 	

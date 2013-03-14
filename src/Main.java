@@ -4,7 +4,7 @@ import java.io.IOException;
  * @author Munkácsy Gergely
  *
  */
-public class Gerda {
+public class Main {
 
 	/**
 	 * @param args

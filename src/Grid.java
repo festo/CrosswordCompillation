@@ -1,5 +1,7 @@
 import java.io.*; 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 
 /**
  * @author Munkácsy Gergely
@@ -15,11 +17,14 @@ public class Grid {
 	private int[][] indexes; 
 	private char[][] chars;
 	private int[] lengthStat;
+	private int notUsedColumn;
+	private HashSet<Word> usedWords;
 	
 	public Grid() {
 		this.height = 0;
 		this.width = 0;
 		this.columns = new ArrayList<Column>();
+		usedWords = new HashSet<Word>();
 
 	}
 	
@@ -106,6 +111,7 @@ public class Grid {
 		}
 		
 		in.close();
+		this.notUsedColumn = this.columns.size();
 	}
 	
 	public void setChar(int x, int y, char ch) {
@@ -116,6 +122,23 @@ public class Grid {
 			this.columns.get(pair[0]).setChar(pair[1], ch);
 		}
 		chars[x][y] = ch;
+	}
+	
+	public void deleteChar(int x, int y, int column) {
+		int[] pair = new int[2];
+		int clear = 0;
+		
+		for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
+			pair = this.gridMatrix[x][y].get(i);
+			if( !this.columns.get(pair[0]).isFilled() ) {
+				this.columns.get(pair[0]).setChar(pair[1], ' ');
+				clear++;
+			}	
+		}
+		
+		if(clear == this.gridMatrix[x][y].size()) {
+			chars[x][y] = ' ';
+		}	
 	}
 	
 	public char getChar(int x, int y) {
@@ -145,6 +168,39 @@ public class Grid {
 				columns.get(i).setFilled(true); // Megjeloljuk, hogy egy szovel lett kitoltva nem a cellak egyessevel
 			}
 		}
+		
+		usedWords.add(w);
+		
+		this.notUsedColumn--;
+	}
+	
+	public void clearColumn(Word w, Column c) {
+		int x = c.getStartX();
+		int y = c.getStartY();
+		int index = 0;
+		
+		for (int i = 0; i < columns.size(); i++) {
+			if(columns.get(i).equals(c)) {
+				index = i;
+			}
+		}
+		
+		columns.get(index).clear();
+		
+		for (int i = 0; i < c.getLength(); i++) {
+			
+			deleteChar(x, y, index);
+			
+			if(c.isVertical()) {
+				x++;
+			} else {
+				y++;
+			}
+		}
+		
+		usedWords.remove(w);
+		
+		this.notUsedColumn++;
 	}
 	
 	/**
@@ -153,7 +209,10 @@ public class Grid {
 	 */
 	public boolean getRandomBoolean() {
 	  return Math.random() < 0.5;
-	  
+	}
+	
+	public boolean isUsedWord(Word w) {
+		return usedWords.contains(w);
 	}
 
 	/*
@@ -189,18 +248,28 @@ public class Grid {
 		return lengthStat;
 	}
 
-	
-	/**
-	 * Debug functions
-	 */
-	
-	public void debug() {
-//		for (Column c : this.columns) {
-//			System.out.println(c);
-//		}
-		for (int i = 0; i < lengthStat.length; i++) {
-			System.out.println(lengthStat[i]);
-		}
+	public boolean isFull() {
+		System.out.println("Maradt: "+notUsedColumn);
+		return (notUsedColumn == 0);
 	}
+
+	public String usedWordsList() {
+		return "Grid [usedWords=" + usedWords + "]";
+	}
+	
+	@Override
+	public String toString() {
+		String out = "";
+		for (int i = 0; i < chars.length; i++) {
+			out += "[ ";
+			for (int j = 0; j < chars[i].length; j++) {
+				out += chars[i][j]+" ";
+				
+			}
+			out += "]\n";
+		}
+//		return "Grid [chars=" + Arrays.toString(chars) + "]";
+		return out;
+	}	
 
 }

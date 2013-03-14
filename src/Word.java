@@ -33,6 +33,23 @@ public class Word {
 	public char getChar(int index) {
 		return chars[index];
 	}
+	
+	@Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || obj.getClass() != this.getClass()) {
+            return false;
+        }
+
+        Word w = (Word) obj;
+        return (id == w.getId());
+    }
+	
+	 @Override public int hashCode() {
+	        return (41 * (41 + getId()) + getLength());
+	    }
 
 	@Override
 	public String toString() {

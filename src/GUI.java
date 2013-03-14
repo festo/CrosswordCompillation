@@ -14,7 +14,7 @@ public class GUI extends JFrame implements ActionListener  {
 	private JPanel panel;
 	private JButton refreshButton;
 	private static JButton[][] gridButtons;
-	private static int SIZE = 11;
+	private static int SIZE = 0;
 	private static Grid grid;
 	
 	private static int[][] indexes;
@@ -28,6 +28,7 @@ public class GUI extends JFrame implements ActionListener  {
 	
 	public static void createAndShowGUI(Grid g) {
 		grid = g;
+		SIZE = g.getHeight();
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -93,9 +94,9 @@ public class GUI extends JFrame implements ActionListener  {
 		int[][] shape = grid.getShape();
 		
 		Border thickBorder = new LineBorder(Color.BLACK, 1);
-		
-        for(int y=0; y<SIZE; y++){
-          	for(int x=0; x<SIZE; x++){
+
+      	for(int x=0; x<SIZE; x++){
+      		for(int y=0; y<SIZE; y++){
            		gridButtons[x][y]=new JButton(""); //gomb letrehozasa
 //            	grid[x][y].setPreferredSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));	//beallitjuk a meretet az ablak fuggvenyeben
 //            	grid[x][y].setMinimumSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));
@@ -120,12 +121,12 @@ public class GUI extends JFrame implements ActionListener  {
             	table.add(gridButtons[x][y]); 	//hozzaadjuk a gombot a halohoz
             }
 		}
-		paintCells();
+		paintCells(grid);
 	}
 	
-	public static void paintCells() {
+	public static void paintCells(Grid g) {
 		char chars[][];
-		chars = grid.getChars();
+		chars = g.getChars();
 		String label;
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){
@@ -139,8 +140,8 @@ public class GUI extends JFrame implements ActionListener  {
 		}
 	}
 	
-	public static void refresh() {
-		paintCells();
+	public static void refresh(Grid g) {
+		paintCells(g);
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){
             	gridButtons[x][y].revalidate();
@@ -151,7 +152,7 @@ public class GUI extends JFrame implements ActionListener  {
 
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		this.refresh();
+//		this.refresh();
 	}
 
 }
