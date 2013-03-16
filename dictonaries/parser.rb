@@ -1,8 +1,9 @@
 ﻿require 'rubygems'
 require 'sequel'
+require 'unicode'
 
 DB = Sequel.sqlite('dictonaries.db')
-item = DB[:hun_eng]
+item = DB[:eng_hun]
 
 unless ARGV.count > 0
   abort("Adjon meg egy bemeneti fájlt!")
@@ -27,9 +28,9 @@ DB.transaction do
           # 2 es 19 koze essen a hossz, length -1-el kell szamolni
           if !(/(~|<|>|\?)/ =~ line.chomp)
             # A valasz nem tartalmaz spec karaktereket
-            item.insert(:answer => key.chomp, :length => key.length-1, :clue => line.chomp)
+            item.insert(:answer => Unicode::upcase(key.chomp), :length => key.length-1, :clue => line.chomp)
             counter = counter + 1
-            # puts "item.insert(:answer => #{key.chomp}, :length => #{key.length-1}, :clue => #{line.chomp})"
+            # puts "item.insert(:answer => #{Unicode::upcase(key.chomp)}, :length => #{key.length-1}, :clue => #{line.chomp})"
             # puts "Beszúrt sor: #{counter} db"
           end
         end
