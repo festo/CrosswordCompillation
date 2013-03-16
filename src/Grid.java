@@ -20,6 +20,8 @@ public class Grid {
 	private int notUsedColumn;
 	private HashSet<Word> usedWords;
 	
+	public int minNotUsed; // Debug
+	
 	public Grid() {
 		this.height = 0;
 		this.width = 0;
@@ -113,6 +115,7 @@ public class Grid {
 		
 		in.close();
 		this.notUsedColumn = this.columns.size();
+		this.minNotUsed = this.notUsedColumn;
 	}
 	
 	public void setChar(int x, int y, char ch) {
@@ -265,7 +268,10 @@ public class Grid {
 	}
 
 	public boolean isFull() {
-		System.out.println("Maradt: "+notUsedColumn);
+		if( notUsedColumn < minNotUsed ) {
+			minNotUsed = notUsedColumn;
+			System.out.println("Maradt: "+notUsedColumn);
+		}
 		return (notUsedColumn == 0);
 	}
 
@@ -286,6 +292,10 @@ public class Grid {
 		}
 //		return "Grid [chars=" + Arrays.toString(chars) + "]";
 		return out;
+	}
+
+	public boolean isStart() {
+		return (notUsedColumn == columns.size());
 	}	
 
 }

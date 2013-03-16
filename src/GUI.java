@@ -60,7 +60,7 @@ public class GUI extends JFrame implements ActionListener  {
 		panel.setSize(PANEL, HEIGHT);
 		
 		frame.setLayout(new BorderLayout());
-		frame.add("East",panel);
+//		frame.add("East",panel);
 		frame.add("West",table);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 450, 300);
@@ -130,12 +130,12 @@ public class GUI extends JFrame implements ActionListener  {
 		String label;
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){
-            	label = "";
+            	label = "&nbsp;";
             	if(indexes[x][y] != 0) {
-            		label = ""+indexes[x][y];
+            		label += ""+indexes[x][y];
             	}
 //            	grid[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr style=\"font-size: 18px;margin:0;padding:0;\">"+chars[x][y]+"</tr></table></html>");
-            	gridButtons[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 6px;\">"+label+"</tr><tr style=\"color: red;\">"+chars[x][y]+"</tr></table></html>");
+            	gridButtons[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 6px;\">"+label+"</tr><tr style=\"color: red;\">&nbsp;"+chars[x][y]+"</tr></table></html>");
             }
 		}
 	}

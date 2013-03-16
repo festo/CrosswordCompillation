@@ -88,8 +88,11 @@ public class Column {
 	}
 
 	public void setChar(int i, char c) {
-		if(this.freeSpaces > 0 && word[i] == ' ')
+		if(this.freeSpaces > 0 && word[i] == ' ') {
 			this.freeSpaces--;
+		} else if (this.freeSpaces < this.length) {
+			this.freeSpaces++;
+		}
 		
 		this.word[i] = c;
 	}
@@ -108,6 +111,10 @@ public class Column {
 	
 	public int getFilledSpaaces() {
 		return this.length - this.freeSpaces;
+	}
+	
+	public boolean isStarted() {
+		return (this.length > this.freeSpaces);
 	}
 
 	public boolean isFilled() {

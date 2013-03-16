@@ -234,7 +234,8 @@ public class WordsDAO {
 			SQL += "and c" + (i + 1) + " is NULL ";
 		}
 		
-		SQL += " ORDER BY RANDOM() LIMIT 10";
+		SQL += " ORDER BY RANDOM()";
+//		SQL += " LIMIT 10";
 
 		ResultSet rs = statement.executeQuery(SQL);
 
@@ -270,6 +271,28 @@ public class WordsDAO {
 		rs.close();
 
 		return count;
+	}
+	
+	public boolean isFillable(Column c) throws SQLException {
+		int count = 0;
+		String SQL;
+		// connectToMemory();
+
+		Statement statement = memoryConnection.createStatement();
+
+		SQL = "select count(*) as db from words where ";
+
+		SQL += c.getSQL();
+		
+		SQL += " LIMIT 1";
+
+		ResultSet rs = statement.executeQuery(SQL);
+
+		count = rs.getInt("db");
+		rs.close();
+		
+		return (count > 0);
+		
 	}
 	
 	public void setLengthStat(int[] ls) {

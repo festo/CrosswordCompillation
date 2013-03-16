@@ -6,13 +6,14 @@ import java.util.ArrayList;
 public class Core {
 	
 	private Grid grid;
+	private Grid filledGrid;
 	private WordsDAO words;
 	private boolean end = false;
 
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-	//		grid.init("src/grids/grid1.txt");
+//			grid.init("src/grids/grid1.txt");
 			grid.init("src/grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
@@ -20,10 +21,8 @@ public class Core {
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
-			
-//			firstStep();
-			
-			grid = generate(grid);
+						
+			generate(grid);
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
@@ -32,79 +31,94 @@ public class Core {
 		System.out.println("-- VÉGE --");
 	}
 	
-	/**
-	 * Az elso lepesben egy veletlenul kivalasztott rekordot toltunk ki
-	 * @throws SQLException 
-	 */
-	public void firstStep() throws SQLException {
-		// A leghosszab kivalasztasa
-		Column longest = grid.getLongest();
+	public void generate(Grid g) throws SQLException {
 		
-		// Egy megfelelo szo kereses
-		Word word = words.getWordByColumn(longest);
-		
-		// A racsaba beillesztese
-		grid.setWorToColumn(word, longest);
-		
-	}
-	
-	public Grid generate(Grid g) throws SQLException {
+		// Ha teljes a racs akkor keszen vagyunk
 		if(g.isFull() || end) {
 			end = true;
-			return g;
+			filledGrid = g;
+			return;
 		}
+		
+		ArrayList<Word> words;
+		
+		// Ha most kezdunk akkor elteroen mukodik az algoritmus 
+		if(g.isStart()) {
+			// A leghosszab kivalasztasa
+			Column longest = g.getLongest();
+			
+			// A beleillo szavak kivalasztasa
+			words = getBestsWord(longest);
+			
+			// Vegigiteralunk rajtuk
+			for (int i = 0; i < words.size(); i++) {
+				g.setWorToColumn(words.get(i), longest);
+				GUI.refresh(g);
+				generate(g);
+				g.clearColumn(words.get(i), longest);				
+				GUI.refresh(g);
+			}
+			
+			return;
+		}
+		
 		
 		// Kivalasztjuk a megfelelo oszlopot
 		Column bestColumn = getBestColumn(g);
 		
-		if(bestColumn.getLength() == 0) {
-			return g;
-		}
-		
-		ArrayList<Word> words = getBestsWord(bestColumn);
-		System.out.println("Selected column: "+bestColumn);
-		System.out.println("Words count: "+words.size());
+		// Lekerjuk a beleillesztheto szavakat
+		words = getBestsWord(bestColumn);
 		
 		for (int i = 0; i < words.size(); i++) {
-//			System.out.println(g.usedWordsList());
 			if( !g.isUsedWord(words.get(i)) ) {
-				System.out.println("Beszúrva: "+words.get(i));
 
 				g.setWorToColumn(words.get(i), bestColumn);
+				if(isNotFillable(g)) {
+					g.clearColumn(words.get(i), bestColumn);
+					break;
+				}
 				GUI.refresh(g);
-				System.out.println(g);
-				//
 				generate(g);
 				g.clearColumn(words.get(i), bestColumn);
-				System.out.println("Törölve: "+words.get(i));
 				
 				GUI.refresh(g);
-				System.out.println(g);
-				// Amit beletettunk azt vegyuk is ki valahogy ...
 			}	
 		}
 		
-		System.out.println("-- Lecsorog --");
-		return g;
+		return;
 		
+	}
+	
+	/**
+	 * Veletlen random boolenan generator
+	 * @return veletlen igaz vagy hamis ertek
+	 */
+	public boolean getRandomBoolean() {
+	  return Math.random() < 0.5;
 	}
 	
 	/*
 	 * Kiválasztjuk a legjobb oszlopot a beszurashoz.
-	 * Azt, amire a lehető legkevesebb kitöltés létezik.
+	 * A mar megkezdettek kozul azt, amire a leheto legkevesebb kitöltés létezik.
 	 */
 	private Column getBestColumn(Grid g) throws SQLException {
-		Column c = new Column();
-		int minNumberOfWords = Settings.MAX_WORD_COUNT;
+		Column c = null;
+		int minNumberOfWords = 0;
 		int numberOfWords;
 		// Az kell amiben a legkevesebb szabad hely van, de nem 0-a.
-		for (int i = 0; i < g.columns.size(); i++) {
-			if( !g.columns.get(i).isFilled() ) {
-				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
-				if(g.columns.get(i).getFilledSpaaces() >= c.getFilledSpaaces() || numberOfWords <= minNumberOfWords) {
+		for (int i = 1; i < g.columns.size(); i++) {
+			if( !g.columns.get(i).isFilled() && g.columns.get(i).isStarted()) { // ki van-e mar toltve?
+				
+				if(c == null) {
 					c = g.columns.get(i);
-//					System.out.println(numberOfWords + " < " + minNumberOfWords);
-					numberOfWords = minNumberOfWords;
+					minNumberOfWords = words.getWordCountByColumn(g.columns.get(i));
+				}
+				
+				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
+				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords && getRandomBoolean()))) {
+//				if(g.columns.get(i).getFilledSpaaces() >= c.getFilledSpaaces() || numberOfWords <= minNumberOfWords) {
+					c = g.columns.get(i);
+					minNumberOfWords = numberOfWords;
 				}
 			}
 		}
@@ -114,6 +128,20 @@ public class Core {
 	//TODO: Ez nem a heurisztikának megfelelő
 	private ArrayList<Word> getBestsWord(Column c) throws SQLException {
 		return words.getWordsByColumn(c);
+	}
+	
+	/**
+	 * Megviszgalja, hogy kitolheto-e a racs egy adott lepes utan
+	 * @return igaz vagy hamis ertek
+	 * @throws SQLException 
+	 */
+	private boolean isNotFillable(Grid g) throws SQLException {
+		for (int i = 0; i < g.columns.size(); i++) {
+			if( !words.isFillable(g.columns.get(i)) ) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 }
