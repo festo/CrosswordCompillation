@@ -66,14 +66,14 @@ public class Core {
 		System.out.println("Words count: "+words.size());
 		
 		for (int i = 0; i < words.size(); i++) {
-			System.out.println(g.usedWordsList());
+//			System.out.println(g.usedWordsList());
 			if( !g.isUsedWord(words.get(i)) ) {
 				System.out.println("Beszúrva: "+words.get(i));
 
 				g.setWorToColumn(words.get(i), bestColumn);
 				GUI.refresh(g);
 				System.out.println(g);
-				
+				//
 				generate(g);
 				g.clearColumn(words.get(i), bestColumn);
 				System.out.println("Törölve: "+words.get(i));

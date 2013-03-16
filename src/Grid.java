@@ -52,6 +52,7 @@ public class Grid {
 			for (int j = 0; j < this.height; j++) {
 				gridMatrix[i][j] = new ArrayList<int[]>();
 				shape[i][j] = 0;
+				chars[i][j] = ' ';
 			}
 		}
 		
@@ -124,21 +125,36 @@ public class Grid {
 		chars[x][y] = ch;
 	}
 	
-	public void deleteChar(int x, int y, int column) {
+	/**
+	 * Torol egy karaktert a hasabokbol
+	 * @param x A karakter X coordinataja a racsban
+	 * @param y A karakter Y coordinataja a racsban
+	 */
+	public void deleteChar(int x, int y) {
 		int[] pair = new int[2];
 		int clear = 0;
+		boolean deleted = true;
 		
 		for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
 			pair = this.gridMatrix[x][y].get(i);
-			if( !this.columns.get(pair[0]).isFilled() ) {
-				this.columns.get(pair[0]).setChar(pair[1], ' ');
-				clear++;
-			}	
+			if( this.columns.get(pair[0]).isFilled() ) {
+				deleted = false;
+			}
 		}
 		
-		if(clear == this.gridMatrix[x][y].size()) {
-			chars[x][y] = ' ';
-		}	
+		if(deleted) {
+			for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
+				pair = this.gridMatrix[x][y].get(i);
+				if (!this.columns.get(pair[0]).isFilled()) {
+					this.columns.get(pair[0]).setChar(pair[1], ' ');
+					clear++;
+				}
+			}
+
+			if (clear == this.gridMatrix[x][y].size()) {
+				chars[x][y] = ' ';
+			}
+		}
 	}
 	
 	public char getChar(int x, int y) {
@@ -189,7 +205,7 @@ public class Grid {
 		
 		for (int i = 0; i < c.getLength(); i++) {
 			
-			deleteChar(x, y, index);
+			deleteChar(x, y);
 			
 			if(c.isVertical()) {
 				x++;

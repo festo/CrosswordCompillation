@@ -39,7 +39,7 @@ public class WordsDAO {
 														"c19 char); ";
 	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
 	private static final String SQL_clearMemory = "DELETE * FROM words";
-	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? ORDER BY RANDOM() LIMIT ?";
+	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? GROUP BY answer ORDER BY RANDOM() LIMIT ?";
 	
 	public WordsDAO() throws SQLException {
 		try {
@@ -234,7 +234,7 @@ public class WordsDAO {
 			SQL += "and c" + (i + 1) + " is NULL ";
 		}
 		
-		SQL += " LIMIT 10";
+		SQL += " ORDER BY RANDOM() LIMIT 10";
 
 		ResultSet rs = statement.executeQuery(SQL);
 
