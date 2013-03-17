@@ -13,8 +13,8 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-//			grid.init("src/grids/grid1.txt");
-			grid.init("src/grids/sample.txt");
+			grid.init("src/grids/grid2.txt");
+//			grid.init("src/grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
 			
@@ -75,7 +75,7 @@ public class Core {
 				g.setWorToColumn(words.get(i), bestColumn);
 				if(isNotFillable(g)) {
 					g.clearColumn(words.get(i), bestColumn);
-					break;
+					continue;
 				}
 				GUI.refresh(g);
 				generate(g);

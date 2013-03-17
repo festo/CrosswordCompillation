@@ -105,6 +105,7 @@ public class WordsDAO {
 			pst = connection.prepareStatement(SQL_selectFromDatabase);
 			int index = 1;
 			count *= Settings.MAX_WORD_COUNT;
+//			count = Settings.MAX_WORD_COUNT;
 			pst.setInt(index++, length);
 			pst.setInt(index++, count);
 			ResultSet rs = pst.executeQuery();
@@ -136,7 +137,6 @@ public class WordsDAO {
 	public void fillTheMemory() throws SQLException {
 		String SQL_insertIntoMemory = null;
 		int j;
-//		connectToMemory();
 			
 //		"insert into words (id, answer, length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19)";
 		Statement statement = memoryConnection.createStatement();
