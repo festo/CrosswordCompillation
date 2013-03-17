@@ -159,6 +159,10 @@ public class WordsDAO {
 					SQL_insertIntoMemory += "'" + w.getAnswer() + "', ";
 					SQL_insertIntoMemory += w.getLength() + ", ";
 					
+					if( w.getLength() < 3 ) {
+						w.getLength();
+					}
+					
 					for (j = 0; j < w.getLength()-1; j++) {
 						SQL_insertIntoMemory += "'" + w.getChar(j) + "', ";
 					}

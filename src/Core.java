@@ -21,8 +21,11 @@ public class Core {
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
-						
+			
+			long startTime = System.currentTimeMillis();
 			generate(grid);
+			long stopTime = System.currentTimeMillis();
+			System.out.println("Futásidő: " + ((stopTime - startTime) / 1000) );
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
@@ -56,12 +59,16 @@ public class Core {
 				GUI.refresh(g);
 				generate(g);
 				if(end) {
+					words = null;
+					longest = null;
 					return;
 				}
 				g.clearColumn(words.get(i), longest);				
 				GUI.refresh(g);
 			}
 			
+			words = null;
+			longest = null;
 			return;
 		}
 		
@@ -83,6 +90,8 @@ public class Core {
 				GUI.refresh(g);
 				generate(g);
 				if(end) {
+					words = null;
+					bestColumn = null;
 					return;
 				}
 				g.clearColumn(words.get(i), bestColumn);
@@ -91,6 +100,8 @@ public class Core {
 			}	
 		}
 		
+		words = null;
+		bestColumn = null;
 		return;
 		
 	}
@@ -128,10 +139,6 @@ public class Core {
 			}
 		}
 		
-		if(c == null){
-			System.out.println("NULL");
-		}
-		
 		return c;
 	}
 	
@@ -147,7 +154,7 @@ public class Core {
 	 */
 	private boolean isNotFillable(Grid g) throws SQLException {
 		for (int i = 0; i < g.columns.size(); i++) {
-			if( !words.isFillable(g.columns.get(i)) ) {
+			if( g.columns.get(i).isStarted() && !words.isFillable(g.columns.get(i)) ) {
 				return true;
 			}
 		}

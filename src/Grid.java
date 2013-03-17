@@ -268,10 +268,6 @@ public class Grid {
 	}
 
 	public boolean isFull() {
-		if( notUsedColumn < minNotUsed ) {
-			minNotUsed = notUsedColumn;
-			System.out.println("Maradt: "+notUsedColumn);
-		}
 		return (notUsedColumn == 0);
 	}
 
