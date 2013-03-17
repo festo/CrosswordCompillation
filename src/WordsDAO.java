@@ -11,6 +11,7 @@ public class WordsDAO {
 	private int[] lengthStat;
 	private static final String dbfile = "database/dictonaries.db";
 	private static String dbtable = "eng_hun";
+//	private static String dbtable = "hun_eng";
 	private Connection connection = null;
 	private Connection memoryConnection = null;
 	

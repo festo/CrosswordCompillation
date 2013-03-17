@@ -88,10 +88,16 @@ public class Column {
 	}
 
 	public void setChar(int i, char c) {
-		if(this.freeSpaces > 0 && word[i] == ' ') {
-			this.freeSpaces--;
-		} else if (this.freeSpaces < this.length) {
+//		if(this.freeSpaces > 0 && word[i] == ' ') {
+//			this.freeSpaces--;
+//		} else if (this.freeSpaces < this.length  && word[i] != ' ') {
+//			this.freeSpaces++;
+//		}
+		
+		if(c == ' ' && this.freeSpaces < this.length) {
 			this.freeSpaces++;
+		} else if (c != ' ' && this.freeSpaces > 0) {
+			this.freeSpaces--;
 		}
 		
 		this.word[i] = c;
@@ -143,9 +149,8 @@ public class Column {
 
 	@Override
 	public String toString() {
-		return "Column [startX=" + startX + ", startY=" + startY + ", length="
-				+ length + ", freeSpaces=" + freeSpaces + ", isVertical="
-				+ isVertical + ", word=" + Arrays.toString(word) + "]";
+		return "Column [isFilled="
+				+ isFilled() + ", isStarted=" + isStarted() + " word=" + Arrays.toString(word) + "]";
 	}
 
 	public void clear() {

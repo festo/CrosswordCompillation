@@ -55,6 +55,9 @@ public class Core {
 				g.setWorToColumn(words.get(i), longest);
 				GUI.refresh(g);
 				generate(g);
+				if(end) {
+					return;
+				}
 				g.clearColumn(words.get(i), longest);				
 				GUI.refresh(g);
 			}
@@ -79,6 +82,9 @@ public class Core {
 				}
 				GUI.refresh(g);
 				generate(g);
+				if(end) {
+					return;
+				}
 				g.clearColumn(words.get(i), bestColumn);
 				
 				GUI.refresh(g);
@@ -106,7 +112,7 @@ public class Core {
 		int minNumberOfWords = 0;
 		int numberOfWords;
 		// Az kell amiben a legkevesebb szabad hely van, de nem 0-a.
-		for (int i = 1; i < g.columns.size(); i++) {
+		for (int i = 0; i < g.columns.size(); i++) {
 			if( !g.columns.get(i).isFilled() && g.columns.get(i).isStarted()) { // ki van-e mar toltve?
 				
 				if(c == null) {
@@ -116,12 +122,16 @@ public class Core {
 				
 				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
 				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords && getRandomBoolean()))) {
-//				if(g.columns.get(i).getFilledSpaaces() >= c.getFilledSpaaces() || numberOfWords <= minNumberOfWords) {
 					c = g.columns.get(i);
 					minNumberOfWords = numberOfWords;
 				}
 			}
 		}
+		
+		if(c == null){
+			System.out.println("NULL");
+		}
+		
 		return c;
 	}
 	
