@@ -25,13 +25,21 @@ public class Core {
 			long startTime = System.currentTimeMillis();
 			generate(grid);
 			long stopTime = System.currentTimeMillis();
-			System.out.println("Futásidő: " + ((stopTime - startTime) / 1000) );
+			//System.out.println("Futásidő: " + ((stopTime - startTime) / 1000) );
+			printRunTime((stopTime - startTime));
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
 			words.closeMemoryConnection();
 		}
 		System.out.println("-- VÉGE --");
+	}
+	
+	public void printRunTime(long timestamp) {
+		Date date = new Date(timestamp);
+		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+		System.out.println("Futásidő: " + dateFormatted );
 	}
 	
 	public void generate(Grid g) throws SQLException {
