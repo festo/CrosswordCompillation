@@ -13,7 +13,7 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-			grid.init("src/grids/grid2.txt");
+			grid.init("src/grids/grid1.txt");
 //			grid.init("src/grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
@@ -132,7 +132,7 @@ public class Core {
 				}
 				
 				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
-				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords && getRandomBoolean()))) {
+				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords/* && getRandomBoolean()*/))) {
 					c = g.columns.get(i);
 					minNumberOfWords = numberOfWords;
 				}
