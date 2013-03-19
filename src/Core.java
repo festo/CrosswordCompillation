@@ -1,5 +1,8 @@
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -13,7 +16,7 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-			grid.init("src/grids/grid1.txt");
+			grid.init("src/grids/grid2.txt");
 //			grid.init("src/grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
@@ -37,7 +40,7 @@ public class Core {
 	
 	public void printRunTime(long timestamp) {
 		Date date = new Date(timestamp);
-		DateFormat formatter = new SimpleDateFormat("HH:mm:ss:SSS");
+		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
 		System.out.println("Futásidő: " + dateFormatted );
 	}
