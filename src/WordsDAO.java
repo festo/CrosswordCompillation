@@ -37,8 +37,7 @@ public class WordsDAO {
 														"c16 char, " +
 														"c17 char, " +
 														"c18 char, " +
-														"c19 char); ";
-	private static final String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
+														"c19 char); ";	
 	private static final String SQL_clearMemory = "DELETE * FROM words";
 	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? GROUP BY answer ORDER BY RANDOM() LIMIT ?";
 	
@@ -63,11 +62,20 @@ public class WordsDAO {
 	}
 	
 	public void createMemoryTable() throws SQLException {
+		String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
+		String SQL = " on words(length";
+		String indexName;
 		connectToMemory();
 			
 		Statement statement = memoryConnection.createStatement();
 		statement.executeUpdate(SQL_createTable);
-		statement.executeUpdate(SQL_addIndexes);
+		
+		for (int i = 1; i <= 19; i++) {
+			indexName = "word_chars_index_"+i;
+			SQL += ", c"+i;
+			statement.executeUpdate("CREATE INDEX " + indexName + SQL + " ); ");		
+		}
+		
 	}
 	
 	public void clearMemory() throws SQLException {
@@ -198,9 +206,11 @@ public class WordsDAO {
 
 		SQL += c.getSQL() + " ";
 
-		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
-			SQL += "and c" + (i + 1) + " is NULL ";
-		}
+		SQL += "AND length = "+c.getLength();
+		
+//		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
+//			SQL += "and c" + (i + 1) + " is NULL ";
+//		}
 
 		SQL += "ORDER BY RANDOM() LIMIT 1";
 
@@ -234,13 +244,14 @@ public class WordsDAO {
 
 		SQL = "select DISTINCT * from words where ";
 		SQL += c.getSQL() + " ";
+		SQL += "AND length = "+c.getLength();
 
-		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
-			SQL += "and c" + (i + 1) + " is NULL ";
-		}
+//		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
+//			SQL += "and c" + (i + 1) + " is NULL ";
+//		}
 		
 		SQL += " ORDER BY RANDOM()";
-		SQL += " LIMIT 10";
+//		SQL += " LIMIT 10";
 
 		ResultSet rs = statement.executeQuery(SQL);
 
