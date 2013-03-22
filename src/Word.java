@@ -7,6 +7,7 @@ public class Word {
 	private int length;
 	private int id;
 	private char[] chars;
+	private int lookAhead;
 	
 	public Word(int id, String answer) {
 		
@@ -15,7 +16,16 @@ public class Word {
 		this.length = answer.length();
 		this.chars = new char[this.length];
 		this.answer.getChars(0, this.length, this.chars, 0);
+		this.lookAhead = 0; 
 
+	}
+
+	public int getLookAhead() {
+		return lookAhead;
+	}
+
+	public void setLookAhead(int lookAhead) {
+		this.lookAhead = lookAhead;
 	}
 
 	public String getAnswer() {

@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 public class Core {
@@ -12,6 +13,7 @@ public class Core {
 	private Grid filledGrid;
 	private WordsDAO words;
 	private boolean end = false;
+	private int tryCounter = 0;
 
 	public Core() throws IOException {
 		try {
@@ -25,17 +27,20 @@ public class Core {
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
 			
+			System.out.println("-- START --");
 			long startTime = System.currentTimeMillis();
+			
 			generate(grid);
+			
 			long stopTime = System.currentTimeMillis();
-			//System.out.println("Futásidő: " + ((stopTime - startTime) / 1000) );
+			System.out.println("Beszúrások száma: " + tryCounter);
 			printRunTime((stopTime - startTime));
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
 			words.closeMemoryConnection();
 		}
-		System.out.println("-- VÉGE --");
+		
 	}
 	
 	public void printRunTime(long timestamp) {
@@ -62,11 +67,12 @@ public class Core {
 			Column longest = g.getLongest();
 			
 			// A beleillo szavak kivalasztasa
-			words = getBestsWord(longest);
+			words = getBestsWord(longest, g);
 			
 			// Vegigiteralunk rajtuk
 			for (int i = 0; i < words.size(); i++) {
 				g.setWorToColumn(words.get(i), longest);
+				tryCounter++;
 				GUI.refresh(g);
 				generate(g);
 				if(end) {
@@ -88,12 +94,14 @@ public class Core {
 		Column bestColumn = getBestColumn(g);
 		
 		// Lekerjuk a beleillesztheto szavakat
-		words = getBestsWord(bestColumn);
+		words = getBestsWord(bestColumn, g);
+//		words = getBestsWordWithLookAhead(bestColumn, g);
 		
 		for (int i = 0; i < words.size(); i++) {
 			if( !g.isUsedWord(words.get(i)) ) {
 
 				g.setWorToColumn(words.get(i), bestColumn);
+				tryCounter++;
 				if(isNotFillable(g)) {
 					g.clearColumn(words.get(i), bestColumn);
 					continue;
@@ -150,12 +158,31 @@ public class Core {
 			}
 		}
 		
+		g = null;
 		return c;
 	}
 	
-	//TODO: Ez nem a heurisztikának megfelelő
-	private ArrayList<Word> getBestsWord(Column c) throws SQLException {
-		return words.getWordsByColumn(c);
+	private ArrayList<Word> getBestsWord(Column bestColumn, Grid g) throws SQLException {
+		return words.getWordsByColumn(bestColumn);
+	}
+	
+	private ArrayList<Word> getBestsWordWithLookAhead(Column bestColumn, Grid g) throws SQLException {
+		ArrayList<Word> w = words.getWordsByColumn(bestColumn); 
+		Column c = null;
+		
+		for (int i = 0; i < w.size(); i++) {
+			g.setWorToColumn(w.get(i), bestColumn);
+			if( !g.isFull() ) {
+				c = getBestColumn(g);
+				w.get(i).setLookAhead(words.getWordCountByColumn(c));
+			}
+			g.clearColumn(w.get(i), bestColumn);
+		}
+				
+		Collections.sort(w, new WordComparator());
+		
+		g = null;
+		return w;
 	}
 	
 	/**
@@ -166,9 +193,11 @@ public class Core {
 	private boolean isNotFillable(Grid g) throws SQLException {
 		for (int i = 0; i < g.columns.size(); i++) {
 			if( g.columns.get(i).isStarted() && !words.isFillable(g.columns.get(i)) ) {
+				g = null;
 				return true;
 			}
 		}
+		g = null;
 		return false;
 	}
 	

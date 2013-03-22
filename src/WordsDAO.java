@@ -62,7 +62,6 @@ public class WordsDAO {
 	}
 	
 	public void createMemoryTable() throws SQLException {
-		String SQL_addIndexes = "CREATE INDEX word_chars_indexes on words(length, c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c13, c14, c15, c16, c17, c18, c19); ";
 		String SQL = " on words(length";
 		String indexName;
 		connectToMemory();
@@ -128,6 +127,7 @@ public class WordsDAO {
 		    }
 			
 			rs.close();
+			pst = null;
 		      
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
@@ -178,11 +178,14 @@ public class WordsDAO {
 					SQL_insertIntoMemory += "'" + w.getChar(j) + "' ";
 						SQL_insertIntoMemory += ")";
 					statement.executeUpdate(SQL_insertIntoMemory);
+					
+					words = null;
 				}
 				
 			}
 		}			
 		      
+		statement = null;
 		memoryStat();
 	}
 	
@@ -227,9 +230,10 @@ public class WordsDAO {
 		}
 
 		rs.close();
-
-		// System.out.println(w);
-
+		
+		statement = null;
+		SQL = null;
+		answer = null;
 		return w;
 	}
 	
@@ -265,6 +269,8 @@ public class WordsDAO {
 		}
 
 		rs.close();
+		statement = null;
+		SQL = null;
 
 		return words;
 	}
@@ -284,7 +290,10 @@ public class WordsDAO {
 		ResultSet rs = statement.executeQuery(SQL);
 
 		count = rs.getInt("db");
+		
 		rs.close();
+		statement = null;
+		SQL = null;
 
 		return count;
 	}
@@ -300,12 +309,11 @@ public class WordsDAO {
 
 		SQL += c.getSQL();
 		
-		SQL += " LIMIT 1";
-
 		ResultSet rs = statement.executeQuery(SQL);
 
 		count = rs.getInt("db");
 		rs.close();
+		statement = null;
 		
 		return (count > 0);
 		
