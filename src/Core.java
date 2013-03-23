@@ -21,7 +21,7 @@ public class Core {
 			grid.init("grids/grid2.txt");
 //			grid.init("grids/sample.txt");
 			
-			GUI.createAndShowGUI(grid);
+//			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
@@ -75,7 +75,7 @@ public class Core {
 			for (int i = 0; i < words.size(); i++) {
 				g.setWorToColumn(words.get(i), longest);
 				tryCounter++;
-				GUI.refresh(g);
+//				GUI.refresh(g);
 				generate(g);
 				if(end) {
 					words = null;
@@ -83,7 +83,7 @@ public class Core {
 					return;
 				}
 				g.clearColumn(words.get(i), longest);				
-				GUI.refresh(g);
+//				GUI.refresh(g);
 			}
 			
 			words = null;
@@ -108,7 +108,7 @@ public class Core {
 					g.clearColumn(words.get(i), bestColumn);
 					continue;
 				}
-				GUI.refresh(g);
+//				GUI.refresh(g);
 				generate(g);
 				if(end) {
 					words = null;
@@ -117,7 +117,7 @@ public class Core {
 				}
 				g.clearColumn(words.get(i), bestColumn);
 				
-				GUI.refresh(g);
+//				GUI.refresh(g);
 			}	
 		}
 		
