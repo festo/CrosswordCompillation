@@ -186,7 +186,7 @@ public class WordsDAO {
 		}			
 		      
 		statement = null;
-		memoryStat();
+//		memoryStat();
 	}
 	
 	public void closeMemoryConnection() {

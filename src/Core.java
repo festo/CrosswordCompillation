@@ -27,21 +27,22 @@ public class Core {
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
 			
-			System.out.println("-- START --");
+//			System.out.println("-- START --");
 			long startTime = System.currentTimeMillis();
 			
 			generate(grid);
 			
 			long stopTime = System.currentTimeMillis();
-			System.out.println("Beszúrások száma: " + tryCounter);
+			System.out.print("Beszúrások száma: " + tryCounter +" ");
 			printRunTime((stopTime - startTime));
+			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
 			if(words != null)
 				words.closeMemoryConnection();
 		}
-		
+		return;
 	}
 	
 	public void printRunTime(long timestamp) {
