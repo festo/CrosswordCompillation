@@ -18,8 +18,8 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-			grid.init("src/grids/grid2.txt");
-//			grid.init("src/grids/sample.txt");
+			grid.init("grids/grid2.txt");
+//			grid.init("grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
 			
@@ -38,7 +38,8 @@ public class Core {
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
 		} finally {
-			words.closeMemoryConnection();
+			if(words != null)
+				words.closeMemoryConnection();
 		}
 		
 	}
@@ -94,8 +95,8 @@ public class Core {
 		Column bestColumn = getBestColumn(g);
 		
 		// Lekerjuk a beleillesztheto szavakat
-		words = getBestsWord(bestColumn, g);
-//		words = getBestsWordWithLookAhead(bestColumn, g);
+//		words = getBestsWord(bestColumn, g);
+		words = getBestsWordWithLookAhead(bestColumn, g);
 		
 		for (int i = 0; i < words.size(); i++) {
 			if( !g.isUsedWord(words.get(i)) ) {
