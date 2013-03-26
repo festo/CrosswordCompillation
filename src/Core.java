@@ -18,8 +18,8 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-//			grid.init("grids/grid2.txt");
-			grid.init("grids/sample.txt");
+			grid.init("grids/grid2.txt");
+//			grid.init("grids/sample.txt");
 			
 			GUI.createAndShowGUI(grid);
 			

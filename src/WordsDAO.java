@@ -44,6 +44,8 @@ public class WordsDAO {
 	public WordsDAO() throws SQLException {
 		try {
 			Class.forName("org.sqlite.JDBC");
+//			Class.forName("org.h2.JDBC");
+			Class.forName("org.h2.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} 
@@ -57,7 +59,7 @@ public class WordsDAO {
 	
 	private void connectToMemory() throws SQLException {
 		if (memoryConnection == null || memoryConnection.isClosed())
-			memoryConnection = DriverManager.getConnection("jdbc:sqlite:");
+			memoryConnection = DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
 //			memoryConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
 	}
 	
@@ -213,7 +215,7 @@ public class WordsDAO {
 //			SQL += "and c" + (i + 1) + " is NULL ";
 //		}
 
-		SQL += "ORDER BY RANDOM() LIMIT 1";
+		SQL += " LIMIT 1";
 
 		// System.out.println(SQL);
 
@@ -252,8 +254,8 @@ public class WordsDAO {
 //			SQL += "and c" + (i + 1) + " is NULL ";
 //		}
 		
-		SQL += " ORDER BY RANDOM()";
-		SQL += " LIMIT 10";
+//		SQL += " ORDER BY RAND()";
+		SQL += " LIMIT 10;";
 
 		ResultSet rs = statement.executeQuery(SQL);
 
@@ -267,6 +269,7 @@ public class WordsDAO {
 		}
 
 		rs.close();
+		statement.close();
 		statement = null;
 		SQL = null;
 
@@ -283,10 +286,11 @@ public class WordsDAO {
 
 		SQL = "select count(*) as db from words where ";
 
-		SQL += c.getSQL();
+		SQL += c.getSQL()+";";
 
 		ResultSet rs = statement.executeQuery(SQL);
-
+		
+		rs.next();
 		count = rs.getInt("db");
 		
 		rs.close();
@@ -308,7 +312,7 @@ public class WordsDAO {
 		SQL += c.getSQL();
 		
 		ResultSet rs = statement.executeQuery(SQL);
-
+		rs.next();
 		count = rs.getInt("db");
 		rs.close();
 		statement = null;
