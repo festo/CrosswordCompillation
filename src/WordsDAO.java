@@ -106,17 +106,15 @@ public class WordsDAO {
 	}
 	
 	private ArrayList<Word> selectFromDatabase(int length, int count) {
-		PreparedStatement pst = null;
+		Statement statement = null;
 		ArrayList<Word> words = new ArrayList<Word>();
+		count *= Settings.MAX_WORD_COUNT;
+		String SQL = "SELECT * FROM "+dbtable+" WHERE length = "+length+" GROUP BY answer ORDER BY RANDOM() LIMIT "+count;
 		try {
 			connectToDatabase();
-			pst = connection.prepareStatement(SQL_selectFromDatabase);
-			int index = 1;
-			count *= Settings.MAX_WORD_COUNT;
-//			count = Settings.MAX_WORD_COUNT;
-			pst.setInt(index++, length);
-			pst.setInt(index++, count);
-			ResultSet rs = pst.executeQuery();
+			statement = connection.createStatement();
+			
+			ResultSet rs = statement.executeQuery(SQL);
 			int id = 0;
 			String answer = null;
 			while(rs.next()) {
@@ -127,7 +125,7 @@ public class WordsDAO {
 		    }
 			
 			rs.close();
-			pst = null;
+			statement = null;
 		      
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
