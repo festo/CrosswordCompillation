@@ -18,8 +18,8 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-			grid.init("grids/grid2.txt");
-//			grid.init("grids/sample.txt");
+//			grid.init("grids/grid2.txt");
+			grid.init("grids/sample.txt");
 			
 //			GUI.createAndShowGUI(grid);
 			
@@ -33,8 +33,9 @@ public class Core {
 			generate(grid);
 			
 			long stopTime = System.currentTimeMillis();
-			System.out.print("Beszúrások száma: " + tryCounter +" ");
-			printRunTime((stopTime - startTime));
+//			System.out.print("Beszúrások száma: " + tryCounter +" ");
+			System.out.println(tryCounter +" " + (stopTime - startTime));
+//			printRunTime((stopTime - startTime));
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
@@ -96,8 +97,8 @@ public class Core {
 		Column bestColumn = getBestColumn(g);
 		
 		// Lekerjuk a beleillesztheto szavakat
-//		words = getBestsWord(bestColumn, g);
-		words = getBestsWordWithLookAhead(bestColumn, g);
+		words = getBestsWord(bestColumn, g);
+//		words = getBestsWordWithLookAhead(bestColumn, g);
 		
 		for (int i = 0; i < words.size(); i++) {
 			if( !g.isUsedWord(words.get(i)) ) {
