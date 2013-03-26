@@ -255,7 +255,7 @@ public class WordsDAO {
 //		}
 		
 		SQL += " ORDER BY RANDOM()";
-//		SQL += " LIMIT 10";
+		SQL += " LIMIT 10";
 
 		ResultSet rs = statement.executeQuery(SQL);
 

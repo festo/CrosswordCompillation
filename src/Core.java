@@ -30,7 +30,7 @@ public class Core {
 //			System.out.println("-- START --");
 			long startTime = System.currentTimeMillis();
 			
-			generate(grid);
+			generate();
 			
 			long stopTime = System.currentTimeMillis();
 			System.out.print("Beszúrások száma: " + tryCounter +" ");
@@ -52,38 +52,38 @@ public class Core {
 		System.out.println("Futásidő: " + dateFormatted );
 	}
 	
-	public void generate(Grid g) throws SQLException {
+	public void generate() throws SQLException {
 		
 		// Ha teljes a racs akkor keszen vagyunk
-		if(g.isFull() || end) {
+		if(this.grid.isFull() || end) {
 			end = true;
-			filledGrid = g;
+			filledGrid = this.grid;
 			return;
 		}
 		
 		ArrayList<Word> words;
 		
 		// Ha most kezdunk akkor elteroen mukodik az algoritmus 
-		if(g.isStart()) {
+		if(this.grid.isStart()) {
 			// A leghosszab kivalasztasa
-			Column longest = g.getLongest();
+			Column longest = this.grid.getLongest();
 			
 			// A beleillo szavak kivalasztasa
-			words = getBestsWord(longest, g);
+			words = getBestsWord(longest);
 			
 			// Vegigiteralunk rajtuk
 			for (int i = 0; i < words.size(); i++) {
-				g.setWorToColumn(words.get(i), longest);
+				this.grid.setWorToColumn(words.get(i), longest);
 				tryCounter++;
-				GUI.refresh(g);
-				generate(g);
+				GUI.refresh(this.grid);
+				generate();
 				if(end) {
 					words = null;
 					longest = null;
 					return;
 				}
-				g.clearColumn(words.get(i), longest);				
-				GUI.refresh(g);
+				this.grid.clearColumn(words.get(i), longest);				
+				GUI.refresh(this.grid);
 			}
 			
 			words = null;
@@ -93,31 +93,31 @@ public class Core {
 		
 		
 		// Kivalasztjuk a megfelelo oszlopot
-		Column bestColumn = getBestColumn(g);
+		Column bestColumn = getBestColumn();
 		
 		// Lekerjuk a beleillesztheto szavakat
-//		words = getBestsWord(bestColumn, g);
-		words = getBestsWordWithLookAhead(bestColumn, g);
+		words = getBestsWord(bestColumn);
+//		words = getBestsWordWithLookAhead(bestColumn);
 		
 		for (int i = 0; i < words.size(); i++) {
-			if( !g.isUsedWord(words.get(i)) ) {
+			if( !this.grid.isUsedWord(words.get(i)) ) {
 
-				g.setWorToColumn(words.get(i), bestColumn);
+				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
-				if(isNotFillable(g)) {
-					g.clearColumn(words.get(i), bestColumn);
+				if(isNotFillable()) {
+					this.grid.clearColumn(words.get(i), bestColumn);
 					continue;
 				}
-				GUI.refresh(g);
-				generate(g);
+				GUI.refresh(this.grid);
+				generate();
 				if(end) {
 					words = null;
 					bestColumn = null;
 					return;
 				}
-				g.clearColumn(words.get(i), bestColumn);
+				this.grid.clearColumn(words.get(i), bestColumn);
 				
-				GUI.refresh(g);
+				GUI.refresh(this.grid);
 			}	
 		}
 		
@@ -139,51 +139,49 @@ public class Core {
 	 * Kiválasztjuk a legjobb oszlopot a beszurashoz.
 	 * A mar megkezdettek kozul azt, amire a leheto legkevesebb kitöltés létezik.
 	 */
-	private Column getBestColumn(Grid g) throws SQLException {
+	private Column getBestColumn() throws SQLException {
 		Column c = null;
 		int minNumberOfWords = 0;
 		int numberOfWords;
 		// Az kell amiben a legkevesebb szabad hely van, de nem 0-a.
-		for (int i = 0; i < g.columns.size(); i++) {
-			if( !g.columns.get(i).isFilled() && g.columns.get(i).isStarted()) { // ki van-e mar toltve?
+		for (int i = 0; i < this.grid.columns.size(); i++) {
+			if( !this.grid.columns.get(i).isFilled() && this.grid.columns.get(i).isStarted()) { // ki van-e mar toltve?
 				
 				if(c == null) {
-					c = g.columns.get(i);
-					minNumberOfWords = words.getWordCountByColumn(g.columns.get(i));
+					c = this.grid.columns.get(i);
+					minNumberOfWords = words.getWordCountByColumn(this.grid.columns.get(i));
 				}
 				
-				numberOfWords = words.getWordCountByColumn(g.columns.get(i));
+				numberOfWords = words.getWordCountByColumn(this.grid.columns.get(i));
 				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords/* && getRandomBoolean()*/))) {
-					c = g.columns.get(i);
+					c = this.grid.columns.get(i);
 					minNumberOfWords = numberOfWords;
 				}
 			}
 		}
 		
-		g = null;
 		return c;
 	}
 	
-	private ArrayList<Word> getBestsWord(Column bestColumn, Grid g) throws SQLException {
+	private ArrayList<Word> getBestsWord(Column bestColumn) throws SQLException {
 		return words.getWordsByColumn(bestColumn);
 	}
 	
-	private ArrayList<Word> getBestsWordWithLookAhead(Column bestColumn, Grid g) throws SQLException {
+	private ArrayList<Word> getBestsWordWithLookAhead(Column bestColumn) throws SQLException {
 		ArrayList<Word> w = words.getWordsByColumn(bestColumn); 
 		Column c = null;
 		
 		for (int i = 0; i < w.size(); i++) {
-			g.setWorToColumn(w.get(i), bestColumn);
-			if( !g.isFull() ) {
-				c = getBestColumn(g);
+			this.grid.setWorToColumn(w.get(i), bestColumn);
+			if( !this.grid.isFull() ) {
+				c = getBestColumn();
 				w.get(i).setLookAhead(words.getWordCountByColumn(c));
 			}
-			g.clearColumn(w.get(i), bestColumn);
+			this.grid.clearColumn(w.get(i), bestColumn);
 		}
 				
 		Collections.sort(w, new WordComparator());
 		
-		g = null;
 		return w;
 	}
 	
@@ -192,14 +190,13 @@ public class Core {
 	 * @return igaz vagy hamis ertek
 	 * @throws SQLException 
 	 */
-	private boolean isNotFillable(Grid g) throws SQLException {
-		for (int i = 0; i < g.columns.size(); i++) {
-			if( g.columns.get(i).isStarted() && !words.isFillable(g.columns.get(i)) ) {
-				g = null;
+	private boolean isNotFillable() throws SQLException {
+		for (int i = 0; i < this.grid.columns.size(); i++) {
+			if( this.grid.columns.get(i).isStarted() && !words.isFillable(this.grid.columns.get(i)) ) {
+
 				return true;
 			}
 		}
-		g = null;
 		return false;
 	}
 	
