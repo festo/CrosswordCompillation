@@ -18,10 +18,10 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-//			grid.init("grids/grid2.txt");
-			grid.init("grids/sample.txt");
+			grid.init("grids/grid2.txt");
+//			grid.init("grids/sample.txt");
 			
-//			GUI.createAndShowGUI(grid);
+			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
@@ -31,11 +31,11 @@ public class Core {
 			long startTime = System.currentTimeMillis();
 			
 			generate();
-			
+			GUI.refresh(grid);
 			long stopTime = System.currentTimeMillis();
-//			System.out.print("Beszúrások száma: " + tryCounter +" ");
-			System.out.println(tryCounter +" " + (stopTime - startTime));
-//			printRunTime((stopTime - startTime));
+			System.out.print("Beszúrások száma: " + tryCounter +" ");
+//			System.out.println(tryCounter +" " + (stopTime - startTime));
+			printRunTime((stopTime - startTime));
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
