@@ -21,7 +21,7 @@ public class Core {
 			grid.init("grids/grid2.txt");
 //			grid.init("grids/sample.txt");
 			
-			GUI.createAndShowGUI(grid);
+//			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
@@ -31,7 +31,7 @@ public class Core {
 			long startTime = System.currentTimeMillis();
 			
 			generate();
-			GUI.refresh(grid);
+//			GUI.refresh(grid);
 			long stopTime = System.currentTimeMillis();
 			System.out.print("Beszúrások száma: " + tryCounter +" ");
 //			System.out.println(tryCounter +" " + (stopTime - startTime));
