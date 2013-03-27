@@ -304,7 +304,7 @@ public class Grid {
 			sum += cSum;
 		}
 
-		return sum;
+		return (sum / (Math.pow(this.width, this.height) * columns.size()));
 	}
 	
 	@Override
