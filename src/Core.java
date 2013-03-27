@@ -18,9 +18,9 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-//			grid.init("grids/grid2.txt");
-			grid.init("grids/sample.txt");
-			
+			grid.init("grids/grid1.txt");
+//			grid.init("grids/sample.txt");
+			System.out.print("A rács nehézsége: " + grid.getDifficulty());
 			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();

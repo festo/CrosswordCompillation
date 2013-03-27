@@ -275,6 +275,38 @@ public class Grid {
 		return "Grid [usedWords=" + usedWords + "]";
 	}
 	
+	public int getDifficulty() {
+		int[] pair = new int[2];
+		int sum, cSum;
+		int x,y;
+		Column c;
+		sum = 0;
+		for (int i = 0; i < columns.size(); i++) {
+			c = columns.get(i);
+			cSum = 1;
+			for (int j = 0; j < c.getLength(); j++) {
+				x = c.getStartX();
+				y = c.getStartY();
+				
+				for (int k = 0; k < this.gridMatrix[x][y].size(); k++) {
+					pair = this.gridMatrix[x][y].get(k);
+					if(pair[0] != i) {
+						cSum *= this.columns.get(pair[0]).getLength();	
+					}
+				}
+				
+				if(c.isVertical()) {
+					x++;
+				} else {
+					y++;
+				}
+			}
+			sum += cSum;
+		}
+
+		return sum;
+	}
+	
 	@Override
 	public String toString() {
 		String out = "";
