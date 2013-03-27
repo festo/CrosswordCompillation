@@ -33,9 +33,9 @@ public class Core {
 			generate();
 //			GUI.refresh(grid);
 			long stopTime = System.currentTimeMillis();
-			System.out.print("Beszúrások száma: " + tryCounter +" ");
-//			System.out.println(tryCounter +" " + (stopTime - startTime));
-			printRunTime((stopTime - startTime));
+//			System.out.print("Beszúrások száma: " + tryCounter +" ");
+			System.out.println(tryCounter +" " + (stopTime - startTime));
+//			printRunTime((stopTime - startTime));
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());
