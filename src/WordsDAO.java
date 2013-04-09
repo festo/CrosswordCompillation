@@ -275,24 +275,31 @@ public class WordsDAO {
 	
 	
 	public int getWordCountByColumn(Column c) throws SQLException {
+		long startTime = System.currentTimeMillis();
+		
 		int count = 0;
 		String SQL;
 		// connectToMemory();
 
 		Statement statement = memoryConnection.createStatement();
 
-		SQL = "select count(*) as db from words where ";
+		SQL = "select id from words where ";
 
 		SQL += c.getSQL();
 
-		ResultSet rs = statement.executeQuery(SQL);
-
-		count = rs.getInt("db");
+//		ResultSet rs = statement.executeQuery(SQL);
+//
+//		count = rs.getInt("db");
 		
+		ResultSet rs = statement.executeQuery(SQL);
+		while(rs.next()) {
+			count += 1;
+		}		
 		rs.close();
 		statement = null;
 		SQL = null;
-
+		long stopTime = System.currentTimeMillis();
+		System.out.println((stopTime - startTime));
 		return count;
 	}
 	

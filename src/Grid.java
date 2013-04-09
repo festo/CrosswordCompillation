@@ -12,7 +12,7 @@ public class Grid {
 	private int height;
 	private int width;
 	public ArrayList<Column> columns;
-	private ArrayList<int[]>[][] gridMatrix;
+	public ArrayList<int[]>[][] gridMatrix;
 	private int[][] shape;
 	private int[][] indexes; 
 	private char[][] chars;
@@ -251,6 +251,17 @@ public class Grid {
 		return longest;
 	}
 	
+	public int getColumnId(Column c) {
+		
+		for (int i = 1; i < columns.size(); i++) {
+			if(c == columns.get(i)) {
+				return i;
+			}
+		}
+		
+		return 0;
+	}
+	
 	public int[][] getShape() {
 		return shape;
 	}
@@ -275,7 +286,7 @@ public class Grid {
 		return "Grid [usedWords=" + usedWords + "]";
 	}
 	
-	public int getDifficulty() {
+	public double getDifficulty() {
 		int[] pair = new int[2];
 		int sum, cSum;
 		int x,y;
