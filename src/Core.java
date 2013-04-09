@@ -20,7 +20,7 @@ public class Core {
 			grid = new Grid();
 			grid.init("grids/grid1.txt");
 //			grid.init("grids/sample.txt");
-			System.out.print("A rács nehézsége: " + grid.getDifficulty());
+			System.out.println("A rács nehézsége: " + grid.getDifficulty());
 			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
@@ -91,7 +91,6 @@ public class Core {
 			return;
 		}
 		
-		
 		// Kivalasztjuk a megfelelo oszlopot
 		Column bestColumn = getBestColumn();
 		
@@ -104,7 +103,7 @@ public class Core {
 
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
-				if(isNotFillable()) {
+				if(isNotFillable(bestColumn)) {
 					this.grid.clearColumn(words.get(i), bestColumn);
 					continue;
 				}
@@ -140,6 +139,9 @@ public class Core {
 	 * A mar megkezdettek kozul azt, amire a leheto legkevesebb kitöltés létezik.
 	 */
 	private Column getBestColumn() throws SQLException {
+//		long startTime = System.currentTimeMillis();
+//		long stopTime = System.currentTimeMillis();
+//		System.out.println((stopTime - startTime));
 		Column c = null;
 		int minNumberOfWords = 0;
 		int numberOfWords;
@@ -190,13 +192,34 @@ public class Core {
 	 * @return igaz vagy hamis ertek
 	 * @throws SQLException 
 	 */
-	private boolean isNotFillable() throws SQLException {
-		for (int i = 0; i < this.grid.columns.size(); i++) {
-			if( this.grid.columns.get(i).isStarted() && !words.isFillable(this.grid.columns.get(i)) ) {
+	private boolean isNotFillable(Column c) throws SQLException {
+		int[] pair = new int[2];
+		int x,y;
+		int id = this.grid.getColumnId(c);
 
-				return true;
+		for (int i = 0; i < c.getLength(); i++) {
+			x = c.getStartX();
+			y = c.getStartY();
+			for (int j = 0; j < this.grid.gridMatrix[x][y].size(); j++) {
+				pair = this.grid.gridMatrix[x][y].get(j);
+				if(pair[0] != id && !words.isFillable(this.grid.columns.get(i))) {
+					return true;	
+				}
+			}
+
+			if(c.isVertical()) {
+				x++;
+			} else {
+				y++;
 			}
 		}
+
+//		for (int i = 0; i < this.grid.columns.size(); i++) {
+//			if( this.grid.columns.get(i).isStarted() && !words.isFillable(this.grid.columns.get(i)) ) {
+//
+//				return true;
+//			}
+//		}
 		return false;
 	}
 	
