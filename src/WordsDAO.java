@@ -9,8 +9,8 @@ import java.util.Iterator;
 
 public class WordsDAO {
 	private int[] lengthStat;
-	private static final String dbfile = "database/dictonaries.db";
-	private static String dbtable = "eng_hun";
+	private static final String dbfile = "database/enghun.db";
+	private static String dbtable = "words";
 //	private static String dbtable = "hun_eng";
 	private Connection connection = null;
 	private Connection memoryConnection = null;
@@ -275,7 +275,6 @@ public class WordsDAO {
 	
 	
 	public int getWordCountByColumn(Column c) throws SQLException {
-		long startTime = System.currentTimeMillis();
 		
 		int count = 0;
 		String SQL;
@@ -283,23 +282,21 @@ public class WordsDAO {
 
 		Statement statement = memoryConnection.createStatement();
 
-		SQL = "select id from words where ";
+		SQL = "select count(id) as db from words where ";
 
 		SQL += c.getSQL();
 
-//		ResultSet rs = statement.executeQuery(SQL);
-//
-//		count = rs.getInt("db");
-		
 		ResultSet rs = statement.executeQuery(SQL);
-		while(rs.next()) {
-			count += 1;
-		}		
+
+		count = rs.getInt("db");
+		
+//		ResultSet rs = statement.executeQuery(SQL);
+//		while(rs.next()) {
+//			count += 1;
+//		}		
 		rs.close();
 		statement = null;
 		SQL = null;
-		long stopTime = System.currentTimeMillis();
-		System.out.println((stopTime - startTime));
 		return count;
 	}
 	

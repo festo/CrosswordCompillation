@@ -18,8 +18,7 @@ public class Core {
 	public Core() throws IOException {
 		try {
 			grid = new Grid();
-			grid.init("grids/grid1.txt");
-//			grid.init("grids/sample.txt");
+			grid.init("resources/grids/grid3.txt");
 			System.out.println("A rács nehézsége: " + grid.getDifficulty());
 			GUI.createAndShowGUI(grid);
 			
@@ -153,7 +152,7 @@ public class Core {
 					c = this.grid.columns.get(i);
 					minNumberOfWords = words.getWordCountByColumn(this.grid.columns.get(i));
 				}
-				
+								
 				numberOfWords = words.getWordCountByColumn(this.grid.columns.get(i));
 				if( (numberOfWords < minNumberOfWords || (numberOfWords == minNumberOfWords/* && getRandomBoolean()*/))) {
 					c = this.grid.columns.get(i);
@@ -188,7 +187,7 @@ public class Core {
 	}
 	
 	/**
-	 * Megviszgalja, hogy kitolheto-e a racs egy adott lepes utan
+	 * Megvizsgalja, hogy kitolheto-e a racs egy adott lepes utan
 	 * @return igaz vagy hamis ertek
 	 * @throws SQLException 
 	 */
