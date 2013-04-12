@@ -14,34 +14,45 @@ public class Core {
 	private WordsDAO words;
 	private boolean end = false;
 	private int tryCounter = 0;
+	private int gridId = 1;
 
-	public Core() throws IOException {
+	public void setGrid(int id) {
+		if(id <5 && id > 0) {
+			this.gridId = id;
+		}
+	}
+	
+	public void start() {
 		try {
 			grid = new Grid();
-			grid.init("resources/grids/grid3.txt");
-			System.out.println("A rács nehézsége: " + grid.getDifficulty());
+			grid.init("resources/grids/grid"+gridId+".txt");
+//			System.out.println("A rács nehézsége: " + grid.getDifficulty());
 			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
 			
-//			System.out.println("-- START --");
 			long startTime = System.currentTimeMillis();
 			
 			generate();
 			
 			long stopTime = System.currentTimeMillis();
-			System.out.print("Beszúrások száma: " + tryCounter +" ");
-			printRunTime((stopTime - startTime));
+//			System.out.print("Beszúrások száma: " + tryCounter +" ");
+//			printRunTime((stopTime - startTime));
 			
 		} catch(SQLException e) {
-		      System.err.println(e.getMessage());
+		      System.err.println(e.getMessage());	
+		} catch (IOException e) {
+			// TODO: handle exception
 		} finally {
 			if(words != null)
 				words.closeMemoryConnection();
-		}
-		return;
+		}	
+		
+	}
+	
+	public Core() {
 	}
 	
 	public void printRunTime(long timestamp) {

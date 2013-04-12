@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 public class WordsDAO {
 	private int[] lengthStat;
-	private static final String dbfile = "database/enghun.db";
+	private static final String dbfile = "database/huneng.db";
 	private static String dbtable = "words";
 //	private static String dbtable = "hun_eng";
 	private Connection connection = null;

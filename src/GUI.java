@@ -1,6 +1,9 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.*;
 import javax.swing.border.Border;
@@ -11,8 +14,6 @@ public class GUI extends JFrame implements ActionListener  {
 	private static final long serialVersionUID = 1L;
 	private JFrame frame;
 	private static JPanel table;
-	private JPanel panel;
-	private JButton refreshButton;
 	private static JButton[][] gridButtons;
 	private static int SIZE = 0;
 	private static Grid grid;
@@ -23,8 +24,6 @@ public class GUI extends JFrame implements ActionListener  {
 	public static final int WIDTH = 600;
 	/** A tabla magassaga */
 	public static final int HEIGHT = 600;
-	/** Az oldalso panel szelessege */
-	public static final int PANEL = 200;
 	
 	public static void createAndShowGUI(Grid g) {
 		grid = g;
@@ -52,27 +51,33 @@ public class GUI extends JFrame implements ActionListener  {
 		table.setLayout(new GridLayout(SIZE,SIZE));	//letrehozunk egy negyzet alaku tablat
 		table.setSize(WIDTH,HEIGHT);	//beallitjuk a meretet pixelben
 		
-		refreshButton.setText("Frissítés");	//helpButton
-		refreshButton.addActionListener(this);
-		
-		panel.setLayout(new BorderLayout());
-		panel.add("South",refreshButton);
-		panel.setSize(PANEL, HEIGHT);
-		
 		frame.setLayout(new BorderLayout());
-//		frame.add("East",panel);
 		frame.add("West",table);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.pack();		//megfelelo meretet allitunk az ablaknak
         frame.setVisible(true);
         
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();	//lekerjuk a tajolashoz a monitor meretet
         Dimension windowSize = frame.getSize();
         
-        frame.setTitle("Gerda");
-        frame.setLocation(Math.max(0, (screenSize.width  - windowSize.width ) /2), Math.max(0, (screenSize.height - windowSize.height) /2));    
+        frame.setTitle("Generálás ...");
+        frame.setLocation(Math.max(0, (screenSize.width  - windowSize.width ) /2), Math.max(0, (screenSize.height - windowSize.height) /2));
+        
+        frame.addWindowListener(new WindowAdapter() { 
+            //I skipped unused callbacks for readability
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                if(JOptionPane.showConfirmDialog(frame, "Biztos bezárod ?") == JOptionPane.OK_OPTION){
+                    frame.setVisible(false);
+                    MainGUI.stopGenerate();
+                    return;
+                }
+            }
+        });
 
 
 	}
@@ -83,9 +88,7 @@ public class GUI extends JFrame implements ActionListener  {
 	private void initialize() {
 		frame = new JFrame();
 		table = new JPanel();
-		panel = new JPanel();
 		gridButtons = new JButton[SIZE][SIZE];
-		refreshButton = new JButton();
 		indexes = grid.getIndexes();
 		
 	}
@@ -98,9 +101,7 @@ public class GUI extends JFrame implements ActionListener  {
       	for(int x=0; x<SIZE; x++){
       		for(int y=0; y<SIZE; y++){
            		gridButtons[x][y]=new JButton(""); //gomb letrehozasa
-//            	grid[x][y].setPreferredSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));	//beallitjuk a meretet az ablak fuggvenyeben
-//            	grid[x][y].setMinimumSize(new Dimension(WIDTH/SIZE,HEIGHT/SIZE));
-//            	
+	
             	gridButtons[x][y].setPreferredSize(new Dimension(40,40));	//beallitjuk a meretet az ablak fuggvenyeben
             	gridButtons[x][y].setMinimumSize(new Dimension(40,40));
             	
@@ -127,14 +128,13 @@ public class GUI extends JFrame implements ActionListener  {
 	public static void paintCells(Grid g) {
 		char chars[][];
 		chars = g.getChars();
-		String label;
+		String label = "";
 		for(int x=0; x<SIZE; x++){
             for(int y=0; y<SIZE; y++){
             	label = "&nbsp;";
             	if(indexes[x][y] != 0) {
             		label += ""+indexes[x][y];
             	}
-//            	grid[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 8px;\">"+label+"</tr><tr style=\"font-size: 18px;margin:0;padding:0;\">"+chars[x][y]+"</tr></table></html>");
             	gridButtons[x][y].setText("<html><table style=\"width:25px;height:25px\"><tr style=\"font-size: 6px;\">"+label+"</tr><tr style=\"color: red;\">&nbsp;"+chars[x][y]+"</tr></table></html>");
             }
 		}
@@ -147,12 +147,10 @@ public class GUI extends JFrame implements ActionListener  {
             	gridButtons[x][y].revalidate();
             }
 		}
-//		table.revalidate();
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-//		this.refresh();
+	public void actionPerformed(ActionEvent e) {
 	}
 
 }

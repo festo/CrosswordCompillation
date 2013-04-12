@@ -12,10 +12,7 @@ public class Main {
 	 */
 	
 	public static void main(String[] args) throws IOException {
-//		MainGUI.createAndShowGUI();
-		new Core();
-		
-
+		MainGUI.createAndShowGUI();
 	}
 
 }
