@@ -15,6 +15,7 @@ public class Core {
 	private boolean end = false;
 	private int tryCounter = 0;
 	private int gridId = 1;
+	private String lang = "enghun";
 
 	public void setGrid(int id) {
 		if(id <5 && id > 0) {
@@ -30,6 +31,7 @@ public class Core {
 			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
+			words.setLang(this.lang);
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
 			
@@ -231,6 +233,10 @@ public class Core {
 //			}
 //		}
 		return false;
+	}
+
+	public void setLang(String lang) {
+		this.lang = lang;
 	}
 	
 }

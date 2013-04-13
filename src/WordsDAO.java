@@ -9,9 +9,8 @@ import java.util.Iterator;
 
 public class WordsDAO {
 	private int[] lengthStat;
-	private static final String dbfile = "database/huneng.db";
+	private String dblang = "enghun";
 	private static String dbtable = "words";
-//	private static String dbtable = "hun_eng";
 	private Connection connection = null;
 	private Connection memoryConnection = null;
 	
@@ -52,7 +51,7 @@ public class WordsDAO {
 	
 	private void connectToDatabase() throws SQLException {
 		if (connection == null || connection.isClosed())
-			connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
+			connection = DriverManager.getConnection("jdbc:sqlite:database/"+dblang+".db");
 	}
 	
 	private void connectToMemory() throws SQLException {
@@ -323,5 +322,9 @@ public class WordsDAO {
 	
 	public void setLengthStat(int[] ls) {
 		lengthStat = ls;
+	}
+
+	public void setLang(String lang) {
+		this.dblang = lang;
 	}
 }

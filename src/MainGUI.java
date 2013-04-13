@@ -10,8 +10,10 @@ public class MainGUI extends JFrame implements ActionListener  {
 	
 	private static final long serialVersionUID = 2L;
 	private JFrame frame;
-	private static JPanel table;
-	private static int buttonMatrixSize = 2;
+	private JPanel table;
+	private JPanel panel;
+	private int buttonMatrixSize = 2;
+	private String lang = "enghun";
 	
 	private JButton button1;
 	private JButton button2;
@@ -48,11 +50,39 @@ public class MainGUI extends JFrame implements ActionListener  {
 		
 		makeTable();
 		
+		panel.setLayout(new BorderLayout());		
+		
+		panel.setSize(PANEL, HEIGHT);
+		
+		JRadioButton eng = new JRadioButton("Angol", true);
+		eng.setActionCommand("enghun");
+		eng.addActionListener(this);
+		
+		JRadioButton hun = new JRadioButton("Magyar", false);
+		hun.setActionCommand("huneng");
+		hun.addActionListener(this);
+		
+		ButtonGroup bg = new ButtonGroup();
+		bg.add(eng);
+		bg.add(hun);
+		JPanel radioPanel = new JPanel();
+		radioPanel.setLayout(new GridLayout(1, 2));
+		radioPanel.setSize(200, 100);
+		radioPanel.add(eng);
+		radioPanel.add(hun);
+		radioPanel.setBorder(BorderFactory.createTitledBorder(
+		           BorderFactory.createEtchedBorder(), "A rejtvény nyelve?"));
+		
+		panel.add("North",radioPanel);
+		
+//		
+		
 		table.setLayout(new GridLayout(buttonMatrixSize,buttonMatrixSize));	//letrehozunk egy negyzet alaku tablat
 		table.setSize(WIDTH,HEIGHT);	//beallitjuk a meretet pixelben
 		
 		frame.setLayout(new BorderLayout());
-		frame.add("West",table);
+		frame.add("North",panel);
+		frame.add("South",table);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 450, 300);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -74,6 +104,7 @@ public class MainGUI extends JFrame implements ActionListener  {
 	private void initialize() {
 		frame = new JFrame();
 		table = new JPanel();
+		panel = new JPanel();
 	}
 	
 	public void makeTable(){
@@ -129,22 +160,27 @@ public class MainGUI extends JFrame implements ActionListener  {
 
 	@Override
 	public void actionPerformed(final ActionEvent e) {
-		core = new Thread(){
-	        public void run(){
-				Core c = new Core();
-				if(e.getSource() == button1 ) {
-					c.setGrid(1);
-				} else if (e.getSource() == button2) {
-					c.setGrid(2);
-				} else if (e.getSource() == button3) {
-					c.setGrid(3);
-				} else if (e.getSource() == button4) {
-					c.setGrid(4);
-				}
-				c.start();
-	        }
-	    };  
-	    core.start();
+		if(e.getSource().getClass().getSimpleName().equals("JButton")) {
+			core = new Thread(){
+		        public void run(){
+					Core c = new Core();
+					c.setLang(lang);
+					if(e.getSource() == button1 ) {
+						c.setGrid(1);
+					} else if (e.getSource() == button2) {
+						c.setGrid(2);
+					} else if (e.getSource() == button3) {
+						c.setGrid(3);
+					} else if (e.getSource() == button4) {
+						c.setGrid(4);
+					}
+					c.start();
+		        }
+		    };  
+		    core.start();
+		} else {
+			this.lang = e.getActionCommand();
+		}
 	}
 
 }
