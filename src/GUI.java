@@ -4,15 +4,21 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
+import java.io.IOException;
+import java.sql.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import com.lowagie.text.DocumentException;
+
 public class GUI extends JFrame implements ActionListener  {
 	
 	private static final long serialVersionUID = 1L;
-	private JFrame frame;
+	private static JFrame frame;
 	private static JPanel table;
 	private static JButton[][] gridButtons;
 	private static int SIZE = 0;
@@ -67,11 +73,11 @@ public class GUI extends JFrame implements ActionListener  {
         frame.setLocation(Math.max(0, (screenSize.width  - windowSize.width ) /2), Math.max(0, (screenSize.height - windowSize.height) /2));
         
         frame.addWindowListener(new WindowAdapter() { 
-            //I skipped unused callbacks for readability
-
+        	Object[] options = {"Igen", "Nem"};
             @Override
             public void windowClosing(WindowEvent e) {
-                if(JOptionPane.showConfirmDialog(frame, "Biztos bezárod ?") == JOptionPane.OK_OPTION){
+            	int n = JOptionPane.showOptionDialog(frame, "Biztos bezárod ?", "Bezárás ?", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null, options, options[0]); 
+                if(n == JOptionPane.OK_OPTION){
                     frame.setVisible(false);
                     MainGUI.stopGenerate();
                     return;
@@ -80,6 +86,33 @@ public class GUI extends JFrame implements ActionListener  {
         });
 
 
+	}
+	
+	public static void end(Grid g, long timestamp) {
+		Object[] options = {"Igen", "Nem"};
+		Date date = new Date(timestamp);
+		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
+		String dateFormatted = formatter.format(date);
+     	int n = JOptionPane.showOptionDialog(frame, "A Generálás kész!\nFutásidő: "+dateFormatted+" (perc)\nEl akarod menteni?", "Kész!", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null, options, options[0]); 
+        if(n != JOptionPane.OK_OPTION){
+            frame.setVisible(false);
+            MainGUI.stopGenerate();
+            return;
+        } else {
+        	try {
+				PDF pdf = new PDF(g);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (DocumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+    
 	}
 
 	/**

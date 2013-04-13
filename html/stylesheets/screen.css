@@ -1,0 +1,37 @@
+/* line 1, ../sass/screen.scss */
+table {
+  border: 0;
+}
+
+/* line 6, ../sass/screen.scss */
+#grid-container #table {
+  border: 1px solid black;
+  border-bottom: 0;
+  border-right: 0;
+  margin: 0 auto;
+}
+/* line 11, ../sass/screen.scss */
+#grid-container #table td {
+  width: 30px !important;
+  height: 30px !important;
+  text-align: left;
+  vertical-align: top;
+  font-size: 10px;
+  padding-left: 2px;
+  padding-top: 2px;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+/* line 23, ../sass/screen.scss */
+#grid-container #table .blank {
+  background-color: black;
+}
+
+/* line 31, ../sass/screen.scss */
+#clues #clues-table {
+  margin: 0 auto;
+}
+/* line 33, ../sass/screen.scss */
+#clues #clues-table .column {
+  wifth: 300px;
+}

@@ -318,6 +318,28 @@ public class Grid {
 		return (sum / (Math.pow(this.width, this.height) * columns.size()));
 	}
 	
+	public String toHTML() {
+		String html = "";
+		for(int x=0; x<this.width; x++){
+			html += "<tr>";
+            for(int y=0; y<this.height; y++){
+            	html += "<td";           
+            	if(shape[x][y] == 0) {
+            		html +=" class='blank'";
+            	}
+            	html += ">"; 
+            	
+            	if(indexes[x][y] != 0) {
+            		html +=indexes[x][y];
+            	}
+            			
+            	html += "</td>";
+            }
+            html += "</tr>";
+		}
+		return html;
+	}
+	
 	@Override
 	public String toString() {
 		String out = "";

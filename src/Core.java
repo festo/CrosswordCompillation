@@ -37,11 +37,10 @@ public class Core {
 			
 			long startTime = System.currentTimeMillis();
 			
-			generate();
+//			generate();
 			
 			long stopTime = System.currentTimeMillis();
-//			System.out.print("Beszúrások száma: " + tryCounter +" ");
-//			printRunTime((stopTime - startTime));
+			GUI.end(this.grid, (stopTime - startTime));
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	
@@ -55,13 +54,6 @@ public class Core {
 	}
 	
 	public Core() {
-	}
-	
-	public void printRunTime(long timestamp) {
-		Date date = new Date(timestamp);
-		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
-		String dateFormatted = formatter.format(date);
-		System.out.println("Futásidő: " + dateFormatted );
 	}
 	
 	public void generate() throws SQLException {
