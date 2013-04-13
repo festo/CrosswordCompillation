@@ -1,4 +1,4 @@
-import java.awt.Desktop;
+﻿import java.awt.Desktop;
 import java.io.*;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -22,18 +22,24 @@ public class PDF {
 		buf.append("<html xmlns='http://www.w3.org/1999/xhtml'>");
 		buf.append("    <head>");
 		buf.append("		<style language='text/css'>");
-		buf.append("table {  border: 0; }#grid-container #table { border: 1px solid black; border-bottom: 0; border-right: 0; margin: 0 auto; }#grid-container #table td {  width: 30px !important;  height: 30px !important;  text-align: left;  vertical-align: top;  font-size: 10px;  padding-left: 2px;  padding-top: 2px;  border-right: 1px solid black;  border-bottom: 1px solid black;}#grid-container #table .blank {  background-color: black;}#clues #clues-table {  margin: 0 auto;}#clues #clues-table .column {  wifth: 300px;}");
+		buf.append("table {  border: 0;}#grid-container #table {  border: 1px solid black;  border-bottom: 0;  border-right: 0;  margin: 0 auto;}#grid-container #table td {  width: 30px !important;  height: 30px !important;  text-align: left;  vertical-align: top;  font-size: 10px;  padding-left: 2px;  padding-top: 2px;  border-right: 1px solid black;  border-bottom: 1px solid black;}#grid-container #table .blank {  background-color: black;}#clues {  padding-top: 50px;}#clues #clues-table {  max-width: 700px;  margin: 0 auto;}#clues #clues-table th {  min-width: 200px;}#clues #clues-table td {  padding-left: 10px;}#clues #clues-table .column {  max-width: 300px;}");
 		buf.append("		</style>");
 		buf.append("	</head>");
 		buf.append("	<body>");
 		buf.append("		<div id='grid-container'>");
 		buf.append("			<table id='table' cellpadding='0' cellspacing='0'>");
 		buf.append(g.toHTML());
-		buf.append("</table></div></body></html>");
+		buf.append("</table></div>");
+		buf.append("<div id='clues'><table id='clues-table'><tr><th>Vertical</th><th>Horisontal</th></tr><tr><td>");
+		buf.append(g.getVertivalHTML());
+		buf.append("</td><td>");
+		buf.append(g.getHorisontalHTML());
+		buf.append("</td></tr></table>");
+		buf.append("</div></body></html>");
 				     		
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         @SuppressWarnings("deprecation")
-		Document doc = builder.parse(new StringBufferInputStream(buf.toString()));
+		Document doc = builder.parse(new ByteArrayInputStream(buf.toString().getBytes("UTF-8")));
 
         ITextRenderer renderer = new ITextRenderer();
         renderer.setDocument(doc, null);

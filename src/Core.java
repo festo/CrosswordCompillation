@@ -37,7 +37,7 @@ public class Core {
 			
 			long startTime = System.currentTimeMillis();
 			
-//			generate();
+			generate();
 			
 			long stopTime = System.currentTimeMillis();
 			GUI.end(this.grid, (stopTime - startTime));

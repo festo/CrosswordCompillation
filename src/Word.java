@@ -8,8 +8,9 @@ public class Word {
 	private int id;
 	private char[] chars;
 	private int lookAhead;
+	private String clue;
 	
-	public Word(int id, String answer) {
+	public Word(int id, String answer, String clue) {
 		
 		this.id = id;
 		this.answer = answer;
@@ -17,9 +18,13 @@ public class Word {
 		this.chars = new char[this.length];
 		this.answer.getChars(0, this.length, this.chars, 0);
 		this.lookAhead = 0; 
-
+		this.clue = clue;
 	}
 
+	public String getClue(){
+		return this.clue;
+	}
+	
 	public int getLookAhead() {
 		return lookAhead;
 	}

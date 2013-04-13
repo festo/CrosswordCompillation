@@ -1,7 +1,8 @@
 import java.io.*; 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
+
 
 /**
  * @author Munkácsy Gergely
@@ -183,7 +184,7 @@ public class Grid {
 		//Megkeressuk a megadott oszlopot majd beallitjuk a megfelelo ertekeket
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).equals(c)) {
-				columns.get(i).setId(w.getId()); // Eltaroljuk az ID-t
+				columns.get(i).setWord(w); // Eltaroljuk az ID-t
 				columns.get(i).setFilled(true); // Megjeloljuk, hogy egy szovel lett kitoltva nem a cellak egyessevel
 			}
 		}
@@ -281,10 +282,6 @@ public class Grid {
 	public boolean isFull() {
 		return (notUsedColumn == 0);
 	}
-
-	public String usedWordsList() {
-		return "Grid [usedWords=" + usedWords + "]";
-	}
 	
 	public double getDifficulty() {
 		int[] pair = new int[2];
@@ -340,21 +337,53 @@ public class Grid {
 		return html;
 	}
 	
-	@Override
-	public String toString() {
-		String out = "";
-		for (int i = 0; i < chars.length; i++) {
-			out += "[ ";
-			for (int j = 0; j < chars[i].length; j++) {
-				out += chars[i][j]+" ";
+	public String getVertivalHTML() {
+		String html = "";
+		int x,y;
+		Charset utf8charset = Charset.forName("UTF-8");
+		for (int i = 0; i < columns.size(); i++) {
+			if(columns.get(i).isVertical()) {
+				html += "<tr>";
 				
+				html += "<td>";
+				x = columns.get(i).getStartX();
+				y = columns.get(i).getStartY();
+				html += indexes[x][y]+".";
+				html += "</td>";
+				
+				html += "<td>";
+//				html += new String ( columns.get(i).getWord().getClue().getBytes(), utf8charset );
+				html += columns.get(i).getWord().getClue();
+				html += "</td>";
+				html += "</tr>";
 			}
-			out += "]\n";
 		}
-//		return "Grid [chars=" + Arrays.toString(chars) + "]";
-		return out;
+		return html;
 	}
-
+	
+	public String getHorisontalHTML() {
+		String html = "";
+		int x,y;
+		Charset utf8charset = Charset.forName("UTF-8");
+		for (int i = 0; i < columns.size(); i++) {
+			if(!columns.get(i).isVertical()) {
+				html += "<tr>";
+				
+				html += "<td>";
+				x = columns.get(i).getStartX();
+				y = columns.get(i).getStartY();
+				html += indexes[x][y]+".";
+				html += "</td>";
+				
+				html += "<td>";
+				html += columns.get(i).getWord().getClue();
+				html += "</td>";
+				html += "</tr>";
+			}
+		}
+		return html;
+	}
+	
 	public boolean isStart() {
 		return (notUsedColumn == columns.size());
 	}	

@@ -14,14 +14,23 @@ public class Column {
 	private boolean isFilled;
 	private boolean isVertical = true;
 	private char[] word;
-	private int id;
+	private Word w;
+	private int index;
 	
-	public int getId() {
-		return id;
+	public void setIndex(int i) {
+		this.index = i;
+	}
+	
+	public int getIndex() {
+		return this.index;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void setWord(Word word) {
+		this.w = word;
+	}
+	
+	public Word getWord() {
+		return this.w;
 	}
 
 	public Column() {
@@ -107,10 +116,6 @@ public class Column {
 		return this.word[i];
 	}
 	
-	public String getWord() {
-		return new String(word);
-	}
-	
 	public int getFreeSpaces() {
 		return freeSpaces;
 	}
@@ -155,7 +160,7 @@ public class Column {
 
 	public void clear() {
 		this.isFilled = false;
-		this.id = 0;
+		this.w = null;
 		
 	}
 	

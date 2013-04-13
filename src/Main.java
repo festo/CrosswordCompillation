@@ -1,7 +1,5 @@
 import java.io.IOException;
 
-import com.lowagie.text.DocumentException;
-
 /**
  * @author Munkácsy Gergely
  *

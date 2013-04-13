@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 public class WordsDAO {
 	private int[] lengthStat;
 	private String dblang = "enghun";
@@ -17,6 +19,7 @@ public class WordsDAO {
 	private static final String SQL_createTable = "CREATE TABLE words (" +
 														"id integer primary key, " +
 														"answer varchar(19), " +
+														"clue varchar(255)," +
 														"length integer, " +														
 														"c1 char, " +
 														"c2 char, " +
@@ -38,7 +41,6 @@ public class WordsDAO {
 														"c18 char, " +
 														"c19 char); ";	
 	private static final String SQL_clearMemory = "DELETE * FROM words";
-	private static final String SQL_selectFromDatabase = "SELECT * FROM "+dbtable+" WHERE length = ? GROUP BY answer ORDER BY RANDOM() LIMIT ?";
 	
 	public WordsDAO() throws SQLException {
 		try {
@@ -116,10 +118,12 @@ public class WordsDAO {
 			ResultSet rs = statement.executeQuery(SQL);
 			int id = 0;
 			String answer = null;
+			String clue = null;
 			while(rs.next()) {
 				id = rs.getInt("id");
 				answer = rs.getString("answer");
-				Word w = new Word(id, answer);
+				clue = rs.getString("clue");
+				Word w = new Word(id, answer, clue);
 				words.add(w);
 		    }
 			
@@ -153,7 +157,7 @@ public class WordsDAO {
 				
 				for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
 					Word w = (Word) iterator.next();
-						SQL_insertIntoMemory = "insert into words (id, answer, length, ";
+						SQL_insertIntoMemory = "insert into words (id, answer, clue, length, ";
 					for (j = 1; j < w.getLength(); j++) {
 						SQL_insertIntoMemory += "c"+j+", ";
 					}
@@ -162,6 +166,7 @@ public class WordsDAO {
 					
 					SQL_insertIntoMemory += w.getId() + ", ";
 					SQL_insertIntoMemory += "'" + w.getAnswer() + "', ";
+					SQL_insertIntoMemory += "'" + StringEscapeUtils.escapeSql(w.getClue()) + "', ";
 					SQL_insertIntoMemory += w.getLength() + ", ";
 					
 					if( w.getLength() < 3 ) {
@@ -220,10 +225,12 @@ public class WordsDAO {
 
 		int id = 0;
 		String answer = null;
+		String clue = null;
 		while (rs.next()) {
 			id = rs.getInt("id");
 			answer = rs.getString("answer");
-			w = new Word(id, answer);
+			clue = rs.getString("clue");
+			w = new Word(id, answer, clue);
 		}
 
 		rs.close();
@@ -258,10 +265,12 @@ public class WordsDAO {
 
 		int id = 0;
 		String answer = null;
+		String clue = null;
 		while (rs.next()) {
 			id = rs.getInt("id");
 			answer = rs.getString("answer");
-			w = new Word(id, answer);
+			clue = rs.getString("clue");
+			w = new Word(id, answer, clue);
 			words.add(w);
 		}
 
