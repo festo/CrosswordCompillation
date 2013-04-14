@@ -7,10 +7,12 @@ import java.text.SimpleDateFormat;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import com.lowagie.text.DocumentException;
-
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.resource.FSEntityResolver;
+
+import com.lowagie.text.DocumentException;
+
 
 public class PDF {
 	public PDF(Grid g) throws IOException, DocumentException, Exception {
@@ -30,16 +32,18 @@ public class PDF {
 		buf.append("			<table id='table' cellpadding='0' cellspacing='0'>");
 		buf.append(g.toHTML());
 		buf.append("</table></div>");
-		buf.append("<div id='clues'><table id='clues-table'><tr><th>Vertical</th><th>Horisontal</th></tr><tr><td>");
+		buf.append("<div id='clues'><table id='clues-table'><tr><th>Fuggoleges</th><th>Vizszintes</th></tr><tr><td>");
 		buf.append(g.getVertivalHTML());
 		buf.append("</td><td>");
 		buf.append(g.getHorisontalHTML());
 		buf.append("</td></tr></table>");
 		buf.append("</div></body></html>");
+		
+		System.setProperty("java.net.useSystemProxies", "true");
 				     		
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        @SuppressWarnings("deprecation")
-		Document doc = builder.parse(new ByteArrayInputStream(buf.toString().getBytes("UTF-8")));
+        builder.setEntityResolver(FSEntityResolver.instance());
+        Document doc = builder.parse(new ByteArrayInputStream(buf.toString().getBytes("UTF-8")));
 
         ITextRenderer renderer = new ITextRenderer();
         renderer.setDocument(doc, null);
