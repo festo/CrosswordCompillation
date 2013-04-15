@@ -40,7 +40,7 @@ public class Core {
 			generate();
 			
 			long stopTime = System.currentTimeMillis();
-			GUI.end(this.grid, (stopTime - startTime));
+			GUI.end(this.grid, (stopTime - startTime), tryCounter);
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	

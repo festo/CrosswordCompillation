@@ -252,6 +252,12 @@ public class Grid {
 		return longest;
 	}
 	
+	
+	/**
+	 * Hanyadik column a listában
+	 * @param c amit keresünk
+	 * @return sorszáma
+	 */
 	public int getColumnId(Column c) {
 		
 		for (int i = 1; i < columns.size(); i++) {
