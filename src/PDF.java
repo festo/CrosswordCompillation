@@ -32,7 +32,7 @@ public class PDF {
 		buf.append("			<table id='table' cellpadding='0' cellspacing='0'>");
 		buf.append(g.toHTML());
 		buf.append("</table></div>");
-		buf.append("<div id='clues'><table id='clues-table'><tr><th>Fuggoleges</th><th>Vizszintes</th></tr><tr><td>");
+		buf.append("<div id='clues'><table id='clues-table'><tr><th>Fuggõleges</th><th>Vízszintes</th></tr><tr><td>");
 		buf.append(g.getVertivalHTML());
 		buf.append("</td><td>");
 		buf.append(g.getHorisontalHTML());
