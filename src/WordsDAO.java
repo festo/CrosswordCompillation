@@ -20,7 +20,8 @@ public class WordsDAO {
 														"id integer primary key, " +
 														"answer varchar(19), " +
 														"clue varchar(255)," +
-														"length integer, " +														
+														"frequency integer, " +
+														"length integer, " +		
 														"c1 char, " +
 														"c2 char, " +
 														"c3 char, " +
@@ -119,11 +120,13 @@ public class WordsDAO {
 			int id = 0;
 			String answer = null;
 			String clue = null;
+			int freq = 0;
 			while(rs.next()) {
 				id = rs.getInt("id");
+				freq = rs.getInt("frequency");
 				answer = rs.getString("answer");
 				clue = rs.getString("clue");
-				Word w = new Word(id, answer, clue);
+				Word w = new Word(id, answer, clue, freq);
 				words.add(w);
 		    }
 			
@@ -157,7 +160,7 @@ public class WordsDAO {
 				
 				for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
 					Word w = (Word) iterator.next();
-						SQL_insertIntoMemory = "insert into words (id, answer, clue, length, ";
+						SQL_insertIntoMemory = "insert into words (id, answer, clue, frequency, length, ";
 					for (j = 1; j < w.getLength(); j++) {
 						SQL_insertIntoMemory += "c"+j+", ";
 					}
@@ -167,6 +170,7 @@ public class WordsDAO {
 					SQL_insertIntoMemory += w.getId() + ", ";
 					SQL_insertIntoMemory += "'" + w.getAnswer() + "', ";
 					SQL_insertIntoMemory += "'" + StringEscapeUtils.escapeSql(w.getClue()) + "', ";
+					SQL_insertIntoMemory += w.getFreq() + ", ";
 					SQL_insertIntoMemory += w.getLength() + ", ";
 					
 					if( w.getLength() < 3 ) {
@@ -226,11 +230,13 @@ public class WordsDAO {
 		int id = 0;
 		String answer = null;
 		String clue = null;
+		int freq = 0;
 		while (rs.next()) {
 			id = rs.getInt("id");
 			answer = rs.getString("answer");
 			clue = rs.getString("clue");
-			w = new Word(id, answer, clue);
+			freq = rs.getInt("frequency");
+			w = new Word(id, answer, clue, freq);
 		}
 
 		rs.close();
@@ -266,11 +272,13 @@ public class WordsDAO {
 		int id = 0;
 		String answer = null;
 		String clue = null;
+		int freq = 0;
 		while (rs.next()) {
 			id = rs.getInt("id");
 			answer = rs.getString("answer");
 			clue = rs.getString("clue");
-			w = new Word(id, answer, clue);
+			freq = rs.getInt("frequency");
+			w = new Word(id, answer, clue, freq);
 			words.add(w);
 		}
 

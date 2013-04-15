@@ -9,8 +9,9 @@ public class Word {
 	private char[] chars;
 	private int lookAhead;
 	private String clue;
+	private int freq;
 	
-	public Word(int id, String answer, String clue) {
+	public Word(int id, String answer, String clue, int freq) {
 		
 		this.id = id;
 		this.answer = answer;
@@ -19,8 +20,13 @@ public class Word {
 		this.answer.getChars(0, this.length, this.chars, 0);
 		this.lookAhead = 0; 
 		this.clue = clue;
+		this.freq = freq;
 	}
 
+	public int getFreq() {
+		return this.freq;
+	}
+	
 	public String getClue(){
 		return this.clue;
 	}
