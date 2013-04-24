@@ -40,7 +40,7 @@ public class Core {
 			generate();
 			
 			long stopTime = System.currentTimeMillis();
-			GUI.end(this.grid, (stopTime - startTime), tryCounter);
+			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	

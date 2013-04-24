@@ -71,7 +71,7 @@ public class MainGUI extends JFrame implements ActionListener  {
 		radioPanel.add(eng);
 		radioPanel.add(hun);
 		radioPanel.setBorder(BorderFactory.createTitledBorder(
-		           BorderFactory.createEtchedBorder(), "A rejtvény nyelve?"));
+		           BorderFactory.createEtchedBorder(), "A beírandó szavak nyelve?"));
 		
 		panel.add("North",radioPanel);
 		
