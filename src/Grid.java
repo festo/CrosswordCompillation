@@ -290,36 +290,13 @@ public class Grid {
 	}
 	
 	public double getWordsDifficulty() {
-		int[] pair = new int[2];
-		int sum, cSum;
-		int x,y;
-		Column c;
+		int sum;
 		sum = 0;
 		for (int i = 0; i < columns.size(); i++) {
-			c = columns.get(i);
-			cSum = 1;
-			for (int j = 0; j < c.getLength(); j++) {
-				x = c.getStartX();
-				y = c.getStartY();
-				
-				for (int k = 0; k < this.gridMatrix[x][y].size(); k++) {
-					pair = this.gridMatrix[x][y].get(k);
-					if(pair[0] != i) {
-						cSum *= this.columns.get(pair[0]).getWord().getFreq();
-						System.out.println(this.columns.get(pair[0]).getWord().getFreq());
-					}
-				}
-				
-				if(c.isVertical()) {
-					x++;
-				} else {
-					y++;
-				}
-			}
-			sum += cSum;
+			sum += this.columns.get(i).getWord().getFreq();
 		}
 
-		return (sum / (Math.pow(this.width, this.height) * 10));
+		return (sum / this.columns.size());
 	}
 	
 	public double getGridDifficulty() {
