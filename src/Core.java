@@ -28,7 +28,6 @@ public class Core {
 			grid = new Grid();
 			grid.init("resources/grids/grid"+gridId+".txt");
 //			System.out.println("A rács nehézsége: " + grid.getDifficulty());
-			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLang(this.lang);
@@ -40,7 +39,7 @@ public class Core {
 			generate();
 			
 			long stopTime = System.currentTimeMillis();
-			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
+			System.out.println(tryCounter+" "+(stopTime - startTime));
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	
@@ -79,7 +78,6 @@ public class Core {
 			for (int i = 0; i < words.size(); i++) {
 				this.grid.setWorToColumn(words.get(i), longest);
 				tryCounter++;
-				GUI.refresh(this.grid);
 				generate();
 				if(end) {
 					words = null;
@@ -87,7 +85,6 @@ public class Core {
 					return;
 				}
 				this.grid.clearColumn(words.get(i), longest);				
-				GUI.refresh(this.grid);
 			}
 			
 			words = null;
@@ -111,7 +108,6 @@ public class Core {
 					this.grid.clearColumn(words.get(i), bestColumn);
 					continue;
 				}
-				GUI.refresh(this.grid);
 				generate();
 				if(end) {
 					words = null;
@@ -120,7 +116,6 @@ public class Core {
 				}
 				this.grid.clearColumn(words.get(i), bestColumn);
 				
-				GUI.refresh(this.grid);
 			}	
 		}
 		
