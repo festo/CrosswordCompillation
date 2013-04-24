@@ -30,7 +30,7 @@ freqDB.transaction do
 
 		if $i > max
 			max = $i
-			puts "MAX: #{max}"
+			puts "MAX: #{11-max}"
 		end
 	}
 

@@ -109,10 +109,31 @@ item = freqDB[:words]
 rows = memoryDB[:words].join(:freqDB, :word => :answer)
 count = rows.count
 
+# felosztas 10 reszre
+# init
+fmax = rows.max(:freq)
+n = (rows.min(:freq).to_f / fmax.to_f)
+# intervallum hatarok
+dividing_point = Array.new
+dividing_point.push(0)
+dividing_point.push((1-n).to_f / 10.to_f)
+for i in 1..8
+  dividing_point.push( dividing_point.last + ((1-n).to_f / 10.to_f))
+end
+
+
 freqDB.transaction do 
 	rows.each{
 		|r|
-		item.insert(:answer => r[:answer], :length => r[:length], :clue => r[:clue], :frequency => r[:freq])
+
+    freq = (r[:freq].to_f / fmax.to_f)
+    $i = 0
+    while( freq >= dividing_point[$i].to_f  && $i < 10)
+      $i += 1
+    end
+
+
+		item.insert(:answer => r[:answer], :length => r[:length], :clue => r[:clue], :frequency => (11-$i))
 		counter = counter + 1
 		if counter % 100
 	      	print "\r#{(counter % count) / 10000}%"
