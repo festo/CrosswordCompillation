@@ -104,10 +104,10 @@ public class Core {
 
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
-				if(isNotFillable(bestColumn)) {
-					this.grid.clearColumn(words.get(i), bestColumn);
-					continue;
-				}
+//				if(isNotFillable(bestColumn)) {
+//					this.grid.clearColumn(words.get(i), bestColumn);
+//					continue;
+//				}
 				generate();
 				if(end) {
 					words = null;
