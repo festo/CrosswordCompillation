@@ -27,7 +27,7 @@ public class Core {
 		try {
 			grid = new Grid();
 			grid.init("resources/grids/grid"+gridId+".txt");
-//			System.out.println("A rács nehézsége: " + grid.getDifficulty());
+//			System.out.println("A rács nehézsége: " + grid.getGridDifficulty());
 			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
@@ -107,6 +107,7 @@ public class Core {
 
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
+				GUI.refresh(this.grid);
 				if(isNotFillable(bestColumn)) {
 					this.grid.clearColumn(words.get(i), bestColumn);
 					continue;
@@ -200,13 +201,16 @@ public class Core {
 		int[] pair = new int[2];
 		int x,y;
 		int id = this.grid.getColumnId(c);
+		Column help;
 
+		x = c.getStartX();
+		y = c.getStartY();
+		
 		for (int i = 0; i < c.getLength(); i++) {
-			x = c.getStartX();
-			y = c.getStartY();
+			
 			for (int j = 0; j < this.grid.gridMatrix[x][y].size(); j++) {
 				pair = this.grid.gridMatrix[x][y].get(j);
-				if(pair[0] != id && !words.isFillable(this.grid.columns.get(i))) {
+				if(pair[0] != id && !words.isFillable(this.grid.columns.get(pair[0]))) {
 					return true;	
 				}
 			}

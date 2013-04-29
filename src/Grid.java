@@ -308,9 +308,9 @@ public class Grid {
 		for (int i = 0; i < columns.size(); i++) {
 			c = columns.get(i);
 			cSum = 1;
+			x = c.getStartX();
+			y = c.getStartY();
 			for (int j = 0; j < c.getLength(); j++) {
-				x = c.getStartX();
-				y = c.getStartY();
 				
 				for (int k = 0; k < this.gridMatrix[x][y].size(); k++) {
 					pair = this.gridMatrix[x][y].get(k);
@@ -327,7 +327,7 @@ public class Grid {
 			}
 			sum += cSum;
 		}
-
+		
 		return (sum / (Math.pow(this.width, this.height) * columns.size()));
 	}
 	
