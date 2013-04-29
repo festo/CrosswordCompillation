@@ -27,7 +27,8 @@ public class Core {
 		try {
 			grid = new Grid();
 			grid.init("resources/grids/grid"+gridId+".txt");
-//			System.out.println("A rács nehézsége: " + grid.getDifficulty());
+//			System.out.println("A rács nehézsége: " + grid.getGridDifficulty());
+//			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
 			words.setLang(this.lang);
@@ -39,6 +40,7 @@ public class Core {
 			generate();
 			
 			long stopTime = System.currentTimeMillis();
+//			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
 			System.out.println(tryCounter+" "+(stopTime - startTime));
 			
 		} catch(SQLException e) {
@@ -78,6 +80,11 @@ public class Core {
 			for (int i = 0; i < words.size(); i++) {
 				this.grid.setWorToColumn(words.get(i), longest);
 				tryCounter++;
+//				if(isNotFillable(longest)) {
+//					this.grid.clearColumn(words.get(i), longest);
+//					continue;
+//				}
+//				GUI.refresh(this.grid);
 				generate();
 				if(end) {
 					words = null;
@@ -85,6 +92,7 @@ public class Core {
 					return;
 				}
 				this.grid.clearColumn(words.get(i), longest);				
+//				GUI.refresh(this.grid);
 			}
 			
 			words = null;
@@ -104,10 +112,12 @@ public class Core {
 
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
+//				GUI.refresh(this.grid);
 //				if(isNotFillable(bestColumn)) {
 //					this.grid.clearColumn(words.get(i), bestColumn);
 //					continue;
 //				}
+//				GUI.refresh(this.grid);
 				generate();
 				if(end) {
 					words = null;
@@ -116,6 +126,7 @@ public class Core {
 				}
 				this.grid.clearColumn(words.get(i), bestColumn);
 				
+//				GUI.refresh(this.grid);
 			}	
 		}
 		
@@ -195,13 +206,16 @@ public class Core {
 		int[] pair = new int[2];
 		int x,y;
 		int id = this.grid.getColumnId(c);
+		Column help;
 
+		x = c.getStartX();
+		y = c.getStartY();
+		
 		for (int i = 0; i < c.getLength(); i++) {
-			x = c.getStartX();
-			y = c.getStartY();
+			
 			for (int j = 0; j < this.grid.gridMatrix[x][y].size(); j++) {
 				pair = this.grid.gridMatrix[x][y].get(j);
-				if(pair[0] != id && !words.isFillable(this.grid.columns.get(i))) {
+				if(pair[0] != id && !words.isFillable(this.grid.columns.get(pair[0]))) {
 					return true;	
 				}
 			}
