@@ -16,6 +16,11 @@ import javax.swing.border.LineBorder;
 
 import com.lowagie.text.DocumentException;
 
+/**
+ * Egy konkrét generálást megjelenítő felhasználói felület 
+ * @author Munkácsy Gergely
+ *
+ */
 public class GUI extends JFrame implements ActionListener  {
 	
 	private static final long serialVersionUID = 1L;
@@ -32,6 +37,10 @@ public class GUI extends JFrame implements ActionListener  {
 	/** A tabla magassaga */
 	public static final int HEIGHT = 600;
 	
+	/**
+	 * Külön szálon statikusan megjelenitjuk, hogy ne fogja vissza a generálást
+	 * @param g
+	 */
 	public static void createAndShowGUI(Grid g) {
 		grid = g;
 		SIZE = g.getHeight();
@@ -48,7 +57,7 @@ public class GUI extends JFrame implements ActionListener  {
 	}
 
 	/**
-	 * Create the application.
+	 * Konstruktor
 	 */
 	public GUI() {
 		initialize();
@@ -62,7 +71,6 @@ public class GUI extends JFrame implements ActionListener  {
 		frame.add("West",table);
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 450, 300);
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.pack();		//megfelelo meretet allitunk az ablaknak
         frame.setVisible(true);
@@ -73,6 +81,9 @@ public class GUI extends JFrame implements ActionListener  {
         frame.setTitle("Generálás ...");
         frame.setLocation(Math.max(0, (screenSize.width  - windowSize.width ) /2), Math.max(0, (screenSize.height - windowSize.height) /2));
         
+        /**
+         * Ha be szeretné zárni a felhasználó a generálást kérdezzen rá
+         */
         frame.addWindowListener(new WindowAdapter() { 
         	Object[] options = {"Igen", "Nem"};
             @Override
@@ -89,6 +100,13 @@ public class GUI extends JFrame implements ActionListener  {
 
 	}
 	
+	/**
+	 * A generálásnak vége van és elmenthetjük az adatokat egy PDF-be
+	 * @param g a kész rács
+	 * @param timestamp futásidő
+	 * @param tryCounter a beszúrások száma
+	 * @param d nehézség
+	 */
 	public static void end(Grid g, long timestamp, int tryCounter, double d) {
 		Object[] options = {"Igen", "Nem"};
 		Date date = new Date(timestamp);
@@ -100,7 +118,8 @@ public class GUI extends JFrame implements ActionListener  {
             MainGUI.stopGenerate();
             return;
         } else {
-        	try {       		
+        	try {       
+        		// PDF-be mentés
 				PDF pdf = new PDF(g);
 
 			} catch (IOException e) {
@@ -118,7 +137,7 @@ public class GUI extends JFrame implements ActionListener  {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Inicializálás
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -128,6 +147,9 @@ public class GUI extends JFrame implements ActionListener  {
 		
 	}
 	
+	/**
+	 * A rács kirajzolása, összeállítása
+	 */
 	public void makeTable(){
 		int[][] shape = grid.getShape();
 		
@@ -160,6 +182,10 @@ public class GUI extends JFrame implements ActionListener  {
 		paintCells(grid);
 	}
 	
+	/**
+	 * Az egyes cellák beállítása
+	 * @param g Grid
+	 */
 	public static void paintCells(Grid g) {
 		char chars[][];
 		chars = g.getChars();
@@ -175,6 +201,10 @@ public class GUI extends JFrame implements ActionListener  {
 		}
 	}
 	
+	/**
+	 * A megjelenítet rács frissítése
+	 * @param g Grid
+	 */
 	public static void refresh(Grid g) {
 		paintCells(g);
 		for(int x=0; x<SIZE; x++){

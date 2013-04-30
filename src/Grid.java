@@ -6,23 +6,24 @@ import java.util.HashSet;
 
 /**
  * @author Munkácsy Gergely
- *
+ * A keresztrejtvény rácsát eltároló adatszerkezet és a rajta végezhető műveletek
  */
 public class Grid {
 	
-	private int height;
-	private int width;
-	public ArrayList<Column> columns;
-	public ArrayList<int[]>[][] gridMatrix;
-	private int[][] shape;
-	private int[][] indexes; 
-	private char[][] chars;
-	private int[] lengthStat;
-	private int notUsedColumn;
-	private HashSet<Word> usedWords;
+	private int height; // a rács magassága
+	private int width; // a rács szélessége
+	public ArrayList<Column> columns; // ha hasábban lévő oszlpok száma
+	public ArrayList<int[]>[][] gridMatrix; // a hasábok kapcsolatait, metszőpontjait elmento mátrix
+	private int[][] shape; // a rács mintája, hol van fehér négyzet, 0 - fekete, 1- fehér  
+	private int[][] indexes; // a rácsban a hasábok indexei
+	private char[][] chars; // a rács karakterenként ábrázolva
+	private int[] lengthStat; // Statisztika arról, hogy az egyes hosszúságó hasábokból hány darab van
+	private int notUsedColumn; // hány hasáb van amit még nem töltöttünk ki
+	private HashSet<Word> usedWords; // melyek azok a szavak, amit már felhasználtunk
 	
-	public int minNotUsed; // Debug
-	
+	/**
+	 * Konstruktor, nullázza a változók értékeit
+	 */
 	public Grid() {
 		this.height = 0;
 		this.width = 0;
@@ -31,26 +32,43 @@ public class Grid {
 
 	}
 	
+	/**
+	 * Vissaadja a rács magasságát
+	 * @return int
+	 */
 	public int getHeight() {
 		return this.height;
 	}
 	
+	/**
+	 * visszaadja a rács szálességét
+	 * @return int
+	 */
 	public int getWidth() {
 		return this.width;
 	}
 	
+	/**
+	 * Inicualizálja a kezdő értékeket és feltölti a rácsot hasábokkal
+	 * @param filename - A hasábokat tartalmazó fájl neve és elérési útja
+	 * @throws IOException - Ha nem található a bemeneti fájl akkor kivételt dob
+	 */
 	@SuppressWarnings("unchecked")
 	public void init(String filename) throws IOException {
 		
+		// hasáb statisztika elmentése
 		lengthStat = new int[Settings.MAX_WORD_LENGTH];
 		
+		// betölti a fájl tartalmát
 		this.loadGrid(filename);
 		
+		// inicalizálja a mátrixokat
 		gridMatrix = new ArrayList[this.width][this.height];
 		shape = new int[this.width][this.height];
 		chars = new char[this.width][this.height];
 		indexes = new int[this.width][this.height];
-				
+		
+		// A mátrixos reprezentációt feltölti üres karakterekkel
 		for (int i = 0; i < this.width; i++) {
 			for (int j = 0; j < this.height; j++) {
 				gridMatrix[i][j] = new ArrayList<int[]>();
@@ -59,24 +77,29 @@ public class Grid {
 			}
 		}
 		
+		// segédváltozók
 		Column c;
 		int x,y;
 		int[] pair;
 		int count = 1;
+		
+		// eltárolom a hasábok közötti kapcsolatokat
 		for (int i = 0; i < this.columns.size(); i++) {
 			c = this.columns.get(i);
 			x = c.getStartX();
 			y = c.getStartY();
-			if(indexes[x][y] == 0) {
+			if(indexes[x][y] == 0) { // beálítom a hasáb indexét, ha már azon a ponton kezdődik egy másik akkor nem írom felül, mert az biztos ellentétes orientáltságú
 				indexes[x][y] = count;
 				count++;
 			}
+			// elmentem a hasáb négyzeteit a rácsba, külün, külön belácoom.
+			// Elvileg nemcsak 2D-re működne, azért lett így megalkotva
 			for (int j = 0; j < c.getLength(); j++) {
-				pair = new int[2];
+				pair = new int[2]; 
 				pair[0] = i;  // Hanyadik hasab
 				pair[1] = j;  // Hanyadik betuje
 				gridMatrix[x][y].add(pair);
-				shape[x][y] = 1;
+				shape[x][y] = 1; // ha ott van négyzet, akkor az nem fekete
 				if(c.isVertical()) {
 					x++;
 				} else {
@@ -87,6 +110,17 @@ public class Grid {
 		
 	}
 	
+	/**
+	 * Beolvassa a hasábokat tartalmazó fájlt
+	 * A stuktúrája a következő:
+	 * A fájl elején:
+	 * 	M a hasáb szélessége
+	 * 	N a hasáb magassága
+	 * Enterrel elválasztva a hasábok listája
+	 *  x y hossz függőleges
+	 * @param filename a fájl neve és eléréi útja
+	 * @throws IOException  - ha  nem található a fájl
+	 */
 	private void loadGrid(String filename) throws IOException {
 		BufferedReader in = new BufferedReader( new FileReader(filename));
 		String line;
@@ -100,11 +134,11 @@ public class Grid {
 			lineArray = line.split(" ");
 			Column c = new Column();
 			
-			c.setStartX(Integer.parseInt(lineArray[0]));
-			c.setStartY(Integer.parseInt(lineArray[1]));
-			c.setLength(Integer.parseInt(lineArray[2]));
+			c.setStartX(Integer.parseInt(lineArray[0])); // kezdő X
+			c.setStartY(Integer.parseInt(lineArray[1])); // kezdő Y
+			c.setLength(Integer.parseInt(lineArray[2])); // Hossz
 			
-			if(Integer.parseInt(lineArray[3]) == 1) {
+			if(Integer.parseInt(lineArray[3]) == 1) { // orientáltság
 				c.setVertical(true);
 			} else {
 				c.setVertical(false);
@@ -116,29 +150,39 @@ public class Grid {
 		
 		in.close();
 		this.notUsedColumn = this.columns.size();
-		this.minNotUsed = this.notUsedColumn;
 	}
 	
+	/**
+	 * Egy karakter beállítása a megadott pozícíóba, x, y koordináta alapján
+	 * Ha több hasáb metszéspontja akkor minden egyes hasábra beállíja ugyan azt.
+	 * @param x A karakter X koordinataja a racsban
+	 * @param y A karakter Y koordinataja a racsban
+	 * @param ch
+	 */
 	public void setChar(int x, int y, char ch) {
 		int[] pair = new int[2];
 		
+		// végig megyünk a metszeten
 		for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
 			pair = this.gridMatrix[x][y].get(i);
+			// eltároljuk a karaktert
 			this.columns.get(pair[0]).setChar(pair[1], ch);
 		}
+		// elmentjük a karaktert az ábrázoláshoz
 		chars[x][y] = ch;
 	}
 	
 	/**
 	 * Torol egy karaktert a hasabokbol
-	 * @param x A karakter X coordinataja a racsban
-	 * @param y A karakter Y coordinataja a racsban
+	 * @param x A karakter X koordinataja a racsban
+	 * @param y A karakter Y koordinataja a racsban
 	 */
 	public void deleteChar(int x, int y) {
 		int[] pair = new int[2];
 		int clear = 0;
 		boolean deleted = true;
 		
+		// Megnézzük, hogy ha a hasáb már egy adott szóval ki van töltve és egy metszetet törlünk akkor ne rontsa el a kés szót.
 		for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
 			pair = this.gridMatrix[x][y].get(i);
 			if( this.columns.get(pair[0]).isFilled() ) {
@@ -146,6 +190,7 @@ public class Grid {
 			}
 		}
 		
+		// Ha törölhető, akkor töröljük
 		if(deleted) {
 			for (int i = 0; i < this.gridMatrix[x][y].size(); i++) {
 				pair = this.gridMatrix[x][y].get(i);
@@ -161,15 +206,27 @@ public class Grid {
 		}
 	}
 	
+	/**
+	 * Visszaadja a megadott koordinátán található karaktert.
+	 * @param x A karakter X koordinataja a racsban
+	 * @param y A karakter Y koordinataja a racsban
+	 * @return char
+	 */
 	public char getChar(int x, int y) {
 		int[] pair = new int[2];
 		pair = this.gridMatrix[x][y].get(0);
 		return this.columns.get(pair[0]).getChar(pair[1]);
 	}
 	
+	/**
+	 * Egy egész szót beállít egy hasábba, gyakorlatilag végigiterál karakterenként
+	 * @param w a beírandó szó
+	 * @param c a kitöltendő hasáb
+	 */
 	public void setWorToColumn(Word w, Column c) {
 		int x = c.getStartX();
 		int y = c.getStartY();
+		// karakterenként elmentjük a szót
 		for (int i = 0; i < c.getLength(); i++) {
 			
 			setChar(x, y, w.getChar(i));
@@ -189,24 +246,33 @@ public class Grid {
 			}
 		}
 		
+		// ezt a szót má ne használjuk fel többször
 		usedWords.add(w);
 		
 		this.notUsedColumn--;
 	}
 	
+	/**
+	 * Egy hasábból kitörli a beleírt szót
+	 * @param w a törlendő szó
+	 * @param c a kiválasztott hasáb
+	 */
 	public void clearColumn(Word w, Column c) {
 		int x = c.getStartX();
 		int y = c.getStartY();
 		int index = 0;
 		
+		// Megkeressük a hasábot
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).equals(c)) {
 				index = i;
 			}
 		}
 		
+		// Meghívkuk rá a törlést, ezzel lenullázzuk a változókat is, nem a karaktereket töröljük
 		columns.get(index).clear();
 		
+		// majd tötöljük a karaktereket
 		for (int i = 0; i < c.getLength(); i++) {
 			
 			deleteChar(x, y);
@@ -231,12 +297,18 @@ public class Grid {
 	  return Math.random() < 0.5;
 	}
 	
+	/**
+	 * Visszaadja, hogy egy szót felhasználtunk-e már a generálás folyamán
+	 * @param w a keresett szó
+	 * @return true/false
+	 */
 	public boolean isUsedWord(Word w) {
 		return usedWords.contains(w);
 	}
 
-	/*
+	/**
 	 * Visszaadja a leghosszab hasabot. Ha tobb is egyforma hosszu akkor veletleneul valaszt egyet
+	 * @return Column
 	 */
 	public Column getLongest() {
 		Column longest = columns.get(0); // Az elsonek keresunk hosszabbat
@@ -269,6 +341,10 @@ public class Grid {
 		return 0;
 	}
 	
+	/*
+	 * Hogy külső osztályokból is elérhető legyen
+	 */
+	
 	public int[][] getShape() {
 		return shape;
 	}
@@ -289,6 +365,10 @@ public class Grid {
 		return (notUsedColumn == 0);
 	}
 	
+	/**
+	 * Visszaadja azt, hogy a felhasznált szavak alapján egy rejtvény milyen neház
+	 * @return szavak nehézségének átlaga
+	 */
 	public double getWordsDifficulty() {
 		int sum;
 		sum = 0;
@@ -299,6 +379,11 @@ public class Grid {
 		return (sum / this.columns.size());
 	}
 	
+	/**
+	 * Visszaadja azt, hogy a rács szempontjából a rejtvény milyen nehéz
+	 * Részletes magyarázat a szakdolgozatomban
+	 * @return a rács nehézségének arányszáma
+	 */
 	public double getGridDifficulty() {
 		int[] pair = new int[2];
 		int sum, cSum;
@@ -331,6 +416,10 @@ public class Grid {
 		return (sum / (Math.pow(this.width, this.height) * columns.size()));
 	}
 	
+	/**
+	 * A PDF elmentséhez kinegenrálja a rácsot egy HTML táblázatba
+	 * @return String
+	 */
 	public String toHTML() {
 		String html = "";
 		for(int x=0; x<this.width; x++){
@@ -353,10 +442,13 @@ public class Grid {
 		return html;
 	}
 	
+	/**
+	 * Visszaadja a függőlegesen felsorot szavakat egy HTML táblázatban a PDF generáláshoz
+	 * @return String
+	 */
 	public String getVertivalHTML() {
 		String html = "";
 		int x,y;
-		Charset utf8charset = Charset.forName("UTF-8");
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).isVertical()) {
 				html += "<tr>";
@@ -368,7 +460,6 @@ public class Grid {
 				html += "</td>";
 				
 				html += "<td>";
-//				html += new String ( columns.get(i).getWord().getClue().getBytes(), utf8charset );
 				html += columns.get(i).getWord().getClue();
 				html += "</td>";
 				html += "</tr>";
@@ -377,10 +468,13 @@ public class Grid {
 		return html;
 	}
 	
+	/**
+	 * Visszaadja a vízszintes felsorot szavakat egy HTML táblázatban a PDF generáláshoz
+	 * @return String
+	 */
 	public String getHorisontalHTML() {
 		String html = "";
 		int x,y;
-		Charset utf8charset = Charset.forName("UTF-8");
 		for (int i = 0; i < columns.size(); i++) {
 			if(!columns.get(i).isVertical()) {
 				html += "<tr>";
@@ -400,6 +494,10 @@ public class Grid {
 		return html;
 	}
 	
+	/**
+	 * Történt-e már beszúrás
+	 * @return
+	 */
 	public boolean isStart() {
 		return (notUsedColumn == columns.size());
 	}	
