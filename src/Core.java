@@ -6,40 +6,51 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
-
+/**
+ * A generálásért felelős osztály, az egész magja
+ * @author Munkácsy Gergely
+ *
+ */
 public class Core {
 	
-	private Grid grid;
-	private Grid filledGrid;
-	private WordsDAO words;
-	private boolean end = false;
-	private int tryCounter = 0;
-	private int gridId = 1;
-	private String lang = "enghun";
+	private Grid grid; // a grid
+	private WordsDAO words; // A szevek elérését biztosító objektum
+	private boolean end = false; // Befejezte-e a generálást?
+	private int tryCounter = 0; // beszúrások száma
+	private int gridId = 1; // A Grid azonsoítója
+	private String lang = "enghun"; // Alapértelmezett nyelv
 
+	/**
+	 * Beállítja a rács típusát
+	 * @param id
+	 */
 	public void setGrid(int id) {
 		if(id <5 && id > 0) {
 			this.gridId = id;
 		}
 	}
 	
+	/**
+	 * Elkezdi a generálást
+	 */
 	public void start() {
 		try {
-			grid = new Grid();
-			grid.init("resources/grids/grid"+gridId+".txt");
+			grid = new Grid(); // Új rács
+			grid.init("resources/grids/grid"+gridId+".txt"); // Minta beolvasása
 //			System.out.println("A rács nehézsége: " + grid.getGridDifficulty());
-			GUI.createAndShowGUI(grid);
+			GUI.createAndShowGUI(grid); // GUI megjelenítése
 			
-			words = new WordsDAO();
-			words.setLang(this.lang);
-			words.setLengthStat(grid.getlengthStat());
-			words.fillTheMemory();
+			words = new WordsDAO(); // Szavak elérése
+			words.setLang(this.lang); // Nyelv beállítása
+			words.setLengthStat(grid.getlengthStat()); // Statisztika átadása
+			words.fillTheMemory(); // Memória inicializálása
 			
-			long startTime = System.currentTimeMillis();
+			long startTime = System.currentTimeMillis(); // Futásidő mérés
 			
-			generate();
+			generate(); // generálás
 			
-			long stopTime = System.currentTimeMillis();
+			long stopTime = System.currentTimeMillis(); // A generálás vége
+			// A felhasználó értesítése
 			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
 			
 		} catch(SQLException e) {
@@ -53,15 +64,19 @@ public class Core {
 		
 	}
 	
+	
 	public Core() {
 	}
 	
+	/**
+	 * A gereálásért felelős osztály back-track algoritmussal
+	 * @throws SQLException
+	 */
 	public void generate() throws SQLException {
 		
 		// Ha teljes a racs akkor keszen vagyunk
 		if(this.grid.isFull() || end) {
 			end = true;
-			filledGrid = this.grid;
 			return;
 		}
 		
@@ -77,7 +92,7 @@ public class Core {
 			
 			// Vegigiteralunk rajtuk
 			for (int i = 0; i < words.size(); i++) {
-				this.grid.setWorToColumn(words.get(i), longest);
+				this.grid.setWorToColumn(words.get(i), longest); // szó beszúrása
 				tryCounter++;
 				GUI.refresh(this.grid);
 				generate();
@@ -86,7 +101,7 @@ public class Core {
 					longest = null;
 					return;
 				}
-				this.grid.clearColumn(words.get(i), longest);				
+				this.grid.clearColumn(words.get(i), longest); // szó törlése				
 				GUI.refresh(this.grid);
 			}
 			
@@ -100,25 +115,33 @@ public class Core {
 		
 		// Lekerjuk a beleillesztheto szavakat
 		words = getBestsWord(bestColumn);
+		
+		// használjuk a heurisztikát
+		
 //		words = getBestsWordWithLookAhead(bestColumn);
 		
+		// Végigmegyünk a beszúrható szavakon
 		for (int i = 0; i < words.size(); i++) {
+			// Ha még nem használtuk fel
 			if( !this.grid.isUsedWord(words.get(i)) ) {
-
+				
+				// beszúrjuk a rácsba
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
 				GUI.refresh(this.grid);
+				// megnézzük, hogy elrontotta-e az eddigieket
 				if(isNotFillable(bestColumn)) {
 					this.grid.clearColumn(words.get(i), bestColumn);
 					continue;
 				}
 				GUI.refresh(this.grid);
-				generate();
-				if(end) {
+				generate(); // rekurzió
+				if(end) { // ha vége
 					words = null;
 					bestColumn = null;
 					return;
 				}
+				// töröljük a beállított szót
 				this.grid.clearColumn(words.get(i), bestColumn);
 				
 				GUI.refresh(this.grid);
@@ -144,9 +167,6 @@ public class Core {
 	 * A mar megkezdettek kozul azt, amire a leheto legkevesebb kitöltés létezik.
 	 */
 	private Column getBestColumn() throws SQLException {
-//		long startTime = System.currentTimeMillis();
-//		long stopTime = System.currentTimeMillis();
-//		System.out.println((stopTime - startTime));
 		Column c = null;
 		int minNumberOfWords = 0;
 		int numberOfWords;
@@ -154,6 +174,7 @@ public class Core {
 		for (int i = 0; i < this.grid.columns.size(); i++) {
 			if( !this.grid.columns.get(i).isFilled() && this.grid.columns.get(i).isStarted()) { // ki van-e mar toltve?
 				
+				// biztos legyen kivalasztva valami
 				if(c == null) {
 					c = this.grid.columns.get(i);
 					minNumberOfWords = words.getWordCountByColumn(this.grid.columns.get(i));
@@ -170,10 +191,22 @@ public class Core {
 		return c;
 	}
 	
+	/**
+	 * A legjobb szavak listája
+	 * @param bestColumn a hasáb ahova keresünk szavakat
+	 * @return szavak listája
+	 * @throws SQLException
+	 */
 	private ArrayList<Word> getBestsWord(Column bestColumn) throws SQLException {
 		return words.getWordsByColumn(bestColumn);
 	}
 	
+	/**
+	 * A legjobb szavak listája egyszeres előretekintéssel, a heurisztika alapja
+	 * @param bestColumn
+	 * @return szavak listája
+	 * @throws SQLException
+	 */
 	private ArrayList<Word> getBestsWordWithLookAhead(Column bestColumn) throws SQLException {
 		ArrayList<Word> w = words.getWordsByColumn(bestColumn); 
 		Column c = null;
@@ -201,7 +234,6 @@ public class Core {
 		int[] pair = new int[2];
 		int x,y;
 		int id = this.grid.getColumnId(c);
-		Column help;
 
 		x = c.getStartX();
 		y = c.getStartY();
@@ -222,15 +254,13 @@ public class Core {
 			}
 		}
 
-//		for (int i = 0; i < this.grid.columns.size(); i++) {
-//			if( this.grid.columns.get(i).isStarted() && !words.isFillable(this.grid.columns.get(i)) ) {
-//
-//				return true;
-//			}
-//		}
 		return false;
 	}
 
+	/**
+	 * A nyelv beállítása
+	 * @param lang
+	 */
 	public void setLang(String lang) {
 		this.lang = lang;
 	}

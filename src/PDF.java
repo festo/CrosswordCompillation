@@ -13,11 +13,16 @@ import org.xhtmlrenderer.resource.FSEntityResolver;
 
 import com.lowagie.text.DocumentException;
 
-
+/**
+ * A kész rejtvényt elmentő osztály
+ * @author Munkácsy Gergely
+ *
+ */
 public class PDF {
 	public PDF(Grid g) throws IOException, DocumentException, Exception {
 		String outputFileName = generateFilename();
 		
+		// Headerek beállítása
 		StringBuffer buf = new StringBuffer();
 		buf.append("<?xml version='1.0' encoding='UTF-8'?>");
 		buf.append("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>");
@@ -30,15 +35,19 @@ public class PDF {
 		buf.append("	<body>");
 		buf.append("		<div id='grid-container'>");
 		buf.append("			<table id='table' cellpadding='0' cellspacing='0'>");
+		// A rács kirajzolása
 		buf.append(g.toHTML());
 		buf.append("</table></div>");
 		buf.append("<div id='clues'><table id='clues-table'><tr><th>Fuggõleges</th><th>Vízszintes</th></tr><tr><td>");
+		// A függőleges szavak
 		buf.append(g.getVertivalHTML());
 		buf.append("</td><td>");
+		// A vízszintes szavak
 		buf.append(g.getHorisontalHTML());
 		buf.append("</td></tr></table>");
 		buf.append("</div></body></html>");
 		
+		// A PDF generálás
 		System.setProperty("java.net.useSystemProxies", "true");
 				     		
         DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
@@ -53,6 +62,7 @@ public class PDF {
         renderer.createPDF(os);
         os.close();
         
+        // A kész pdf-et megnyitjuk
         if (Desktop.isDesktopSupported()) {
           try {
               File myFile = new File(outputFileName);
@@ -64,6 +74,10 @@ public class PDF {
         
     }
 	
+	/**
+	 * A fájlnév előállítása
+	 * @return a fájl neve
+	 */
 	private String generateFilename() {
 		Date date = new Date(System.currentTimeMillis());
 		DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");

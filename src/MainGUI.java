@@ -6,6 +6,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+/**
+ * A program kezdőképernyője, kiválaztjuk, hogy mit szeretnénk futtani
+ * @author Munkácsy Gergely
+ *
+ */
 public class MainGUI extends JFrame implements ActionListener  {
 	
 	private static final long serialVersionUID = 2L;
@@ -29,6 +34,9 @@ public class MainGUI extends JFrame implements ActionListener  {
 	/** Az oldalso panel szelessege */
 	public static final int PANEL = 200;
 	
+	/**
+	 * A GUI megjelenítése külön szálon
+	 */
 	public static void createAndShowGUI() {
 		javax.swing.SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -43,7 +51,7 @@ public class MainGUI extends JFrame implements ActionListener  {
 	}
 
 	/**
-	 * Create the application.
+	 * Konstruktor
 	 */
 	public MainGUI() {
 		initialize();
@@ -75,8 +83,6 @@ public class MainGUI extends JFrame implements ActionListener  {
 		
 		panel.add("North",radioPanel);
 		
-//		
-		
 		table.setLayout(new GridLayout(buttonMatrixSize,buttonMatrixSize));	//letrehozunk egy negyzet alaku tablat
 		table.setSize(WIDTH,HEIGHT);	//beallitjuk a meretet pixelben
 		
@@ -99,7 +105,7 @@ public class MainGUI extends JFrame implements ActionListener  {
 	}
 
 	/**
-	 * Initialize the contents of the frame.
+	 * Init
 	 */
 	private void initialize() {
 		frame = new JFrame();
@@ -107,6 +113,9 @@ public class MainGUI extends JFrame implements ActionListener  {
 		panel = new JPanel();
 	}
 	
+	/**
+	 * Tábla kirajzolása, hozzá a gombokkal
+	 */
 	public void makeTable(){
 		int buttonSize = 200;
 		ImageIcon img;
@@ -153,17 +162,25 @@ public class MainGUI extends JFrame implements ActionListener  {
 
 	}
 	
+	/**
+	 * Megállía a folyamatban lévő generálást
+	 */
 	@SuppressWarnings("deprecation")
 	public static void stopGenerate() {
 		core.stop();
 	}
 
+	/**
+	 * Eseménykezelő a gombokhoz
+	 */
 	@Override
 	public void actionPerformed(final ActionEvent e) {
 		if(e.getSource().getClass().getSimpleName().equals("JButton")) {
 			core = new Thread(){
 		        public void run(){
 					Core c = new Core();
+					// Létrehozunk egy új generáló objektumot
+					// Beálítjuk a nyelvet és a rácsot
 					c.setLang(lang);
 					if(e.getSource() == button1 ) {
 						c.setGrid(1);

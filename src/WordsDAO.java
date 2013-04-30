@@ -9,13 +9,19 @@ import java.util.Iterator;
 
 import org.apache.commons.lang.StringEscapeUtils;
 
+/**
+ * Adatbázis elérést biztosító osztály
+ * @author Munkácsy Gergely
+ *
+ */
 public class WordsDAO {
 	private int[] lengthStat;
-	private String dblang = "enghun";
-	private static String dbtable = "words";
-	private Connection connection = null;
-	private Connection memoryConnection = null;
+	private String dblang = "enghun"; // alapértelmezett nyelv
+	private static String dbtable = "words"; // a tábla
+	private Connection connection = null; // A fájl elérése
+	private Connection memoryConnection = null; // A memóriában lévő szavak elérése
 	
+	// A memóriában lévő adatbázis elkészítése
 	private static final String SQL_createTable = "CREATE TABLE words (" +
 														"id integer primary key, " +
 														"answer varchar(19), " +
@@ -43,6 +49,10 @@ public class WordsDAO {
 														"c19 char); ";	
 	private static final String SQL_clearMemory = "DELETE * FROM words";
 	
+	/**
+	 * JDBC beállítása
+	 * @throws SQLException
+	 */
 	public WordsDAO() throws SQLException {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -52,17 +62,28 @@ public class WordsDAO {
 		createMemoryTable();
 	}
 	
+	/**
+	 * Kapcsolódik az SQLite adatbázishoz
+	 * @throws SQLException
+	 */
 	private void connectToDatabase() throws SQLException {
 		if (connection == null || connection.isClosed())
 			connection = DriverManager.getConnection("jdbc:sqlite:database/"+dblang+".db");
 	}
 	
+	/**
+	 * Kapcsolódik a memórában lévő adatbázishoz
+	 * @throws SQLException
+	 */
 	private void connectToMemory() throws SQLException {
 		if (memoryConnection == null || memoryConnection.isClosed())
 			memoryConnection = DriverManager.getConnection("jdbc:sqlite:");
-//			memoryConnection = DriverManager.getConnection("jdbc:sqlite::memory:");
 	}
 	
+	/**
+	 * A memóriában létrehozza a táblát és az indexeket
+	 * @throws SQLException
+	 */
 	public void createMemoryTable() throws SQLException {
 		String SQL = " on words(length";
 		String indexName;
@@ -79,17 +100,22 @@ public class WordsDAO {
 		
 	}
 	
-	public void clearMemory() throws SQLException {
-//			connectToMemory();
-			
+	/**
+	 * Törli a memóriából a szavakat ha szükséges
+	 * @throws SQLException
+	 */
+	public void clearMemory() throws SQLException {			
 			Statement statement = memoryConnection.createStatement();
 			statement.executeUpdate(SQL_clearMemory);
 	}
 	
+	/**
+	 * A memóráan lévő szavakról egy statisztika
+	 * @throws SQLException
+	 */
 	private void memoryStat() throws SQLException {
 		System.out.println("-- Memory Database Statistics --");
 		
-//		connectToMemory();
 		Statement statement = memoryConnection.createStatement();
 			
 		String SQL = "select length as length, count(id) as db from words group by length;";
@@ -107,6 +133,12 @@ public class WordsDAO {
 		System.out.println("-- End Memory Database Statistics --");
 	}
 	
+	/**
+	 * Az SQLite fájlból beolvas kellően sok szót
+	 * @param length
+	 * @param count
+	 * @return
+	 */
 	private ArrayList<Word> selectFromDatabase(int length, int count) {
 		Statement statement = null;
 		ArrayList<Word> words = new ArrayList<Word>();
@@ -147,6 +179,7 @@ public class WordsDAO {
 		return words;
 	}
 	
+	// A SQLite fájlból olvasott szavakat elmenti a memórába
 	public void fillTheMemory() throws SQLException {
 		String SQL_insertIntoMemory = null;
 		int j;
@@ -195,6 +228,9 @@ public class WordsDAO {
 //		memoryStat();
 	}
 	
+	/**
+	 * Lezárja a kapcsolatot
+	 */
 	public void closeMemoryConnection() {
 		try {
 			if(memoryConnection != null)
@@ -204,6 +240,12 @@ public class WordsDAO {
 		}
 	}
 	
+	/**
+	 * egy, a hasábba beleillő szót ad vissza
+	 * @param c hasáb
+	 * @return a szó
+	 * @throws SQLException
+	 */
 	public Word getWordByColumn(Column c) throws SQLException {
 		Word w = null;
 		String SQL;
@@ -216,14 +258,8 @@ public class WordsDAO {
 		SQL += c.getSQL() + " ";
 
 		SQL += "AND length = "+c.getLength();
-		
-//		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
-//			SQL += "and c" + (i + 1) + " is NULL ";
-//		}
 
 		SQL += "ORDER BY RANDOM() LIMIT 1";
-
-		// System.out.println(SQL);
 
 		ResultSet rs = statement.executeQuery(SQL);
 
@@ -247,22 +283,22 @@ public class WordsDAO {
 		return w;
 	}
 	
+	/**
+	 * A hasábba beleillő szavak listáját adja vissza
+	 * @param c a hasáb
+	 * @return a szavak listája
+	 * @throws SQLException
+	 */
 	public ArrayList<Word> getWordsByColumn(Column c) throws SQLException {
 		Word w = null;
 		String SQL;
 		ArrayList<Word> words = new ArrayList<Word>();
-
-		// connectToMemory();
 
 		Statement statement = memoryConnection.createStatement();
 
 		SQL = "select DISTINCT * from words where ";
 		SQL += c.getSQL() + " ";
 		SQL += "AND length = "+c.getLength();
-
-//		for (int i = c.getLength(); i < Settings.MAX_WORD_LENGTH; i++) {
-//			SQL += "and c" + (i + 1) + " is NULL ";
-//		}
 		
 		SQL += " ORDER BY RANDOM()";
 		SQL += " LIMIT 10";
@@ -289,7 +325,12 @@ public class WordsDAO {
 		return words;
 	}
 	
-	
+	/**
+	 * Megadja, hogy egy hasábba hány szó illeszthető be az adatbázis alapján
+	 * @param c adott hasáb
+	 * @return beillesztehtő szavak száma
+	 * @throws SQLException
+	 */
 	public int getWordCountByColumn(Column c) throws SQLException {
 		
 		int count = 0;
@@ -316,10 +357,15 @@ public class WordsDAO {
 		return count;
 	}
 	
+	/**
+	 * Egy hasábhoz van-e szó az adatbázisban
+	 * @param c hasáb
+	 * @return true/false
+	 * @throws SQLException
+	 */
 	public boolean isFillable(Column c) throws SQLException {
 		int count = 0;
 		String SQL;
-		// connectToMemory();
 
 		Statement statement = memoryConnection.createStatement();
 

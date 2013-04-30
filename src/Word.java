@@ -1,16 +1,27 @@
 import java.util.Arrays;
 
-
+/**
+ * A szavakat reprezentáló osztály
+ * @author Munkácsy Gergely
+ *
+ */
 public class Word {
 
-	private String answer;
-	private int length;
-	private int id;
-	private char[] chars;
-	private int lookAhead;
-	private String clue;
-	private int freq;
+	private String answer; // a szó
+	private int length; // a szó hossza
+	private int id; // ID
+	private char[] chars; // karakterenként reprezentálva
+	private int lookAhead; // előretekintési érték
+	private String clue; // a kérdés
+	private int freq; // gyakoriság
 	
+	/**
+	 * KOnstruktor
+	 * @param id 
+	 * @param answer
+	 * @param clue
+	 * @param freq
+	 */
 	public Word(int id, String answer, String clue, int freq) {
 		
 		this.id = id;
@@ -23,6 +34,10 @@ public class Word {
 		this.freq = freq;
 	}
 
+	/* 
+	 * Getter/setters 
+	 */
+	
 	public int getFreq() {
 		return this.freq;
 	}
@@ -55,6 +70,9 @@ public class Word {
 		return chars[index];
 	}
 	
+	/**
+	 * Összehasonlít két szót 
+	 */
 	@Override
     public boolean equals(Object obj) {
         if (obj == this) {
