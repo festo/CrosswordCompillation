@@ -6,5 +6,5 @@
  */
 public class Settings {
 	public static final int MAX_WORD_LENGTH = 19; // A szavak max hossza
-	public static final int MAX_WORD_COUNT = 40000; // hány szót töltsön be az adatbázisba
+	public static final int MAX_WORD_COUNT = 1000; // hány szót töltsön be az adatbázisba
 }
