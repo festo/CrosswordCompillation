@@ -12,7 +12,7 @@ public class Main {
 	 */
 	
 	public static void main(String[] args) throws IOException {
-		int type = 1;
+		int type = 3;
 		
 		Core c = new Core();
 		
