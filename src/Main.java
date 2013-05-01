@@ -1,5 +1,7 @@
 import java.io.IOException;
 
+import com.lowagie.text.DocumentException;
+
 /**
  * @author Munkácsy Gergely
  *
@@ -8,11 +10,12 @@ public class Main {
 
 	/**
 	 * @param args
-	 * @throws IOException 
+	 * @throws Exception 
+	 * @throws DocumentException 
 	 */
 	
-	public static void main(String[] args) throws IOException {
-		int type = 3;
+	public static void main(String[] args) throws DocumentException, Exception {
+		int type = 4;
 		
 		Core c = new Core();
 		

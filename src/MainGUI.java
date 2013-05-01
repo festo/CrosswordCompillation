@@ -6,6 +6,8 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import com.lowagie.text.DocumentException;
+
 public class MainGUI extends JFrame implements ActionListener  {
 	
 	private static final long serialVersionUID = 2L;
@@ -174,7 +176,12 @@ public class MainGUI extends JFrame implements ActionListener  {
 					} else if (e.getSource() == button4) {
 						c.setGrid(4);
 					}
-					c.start();
+					try {
+						c.start();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
 		        }
 		    };  
 		    core.start();

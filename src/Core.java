@@ -6,6 +6,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import com.lowagie.text.DocumentException;
+
 
 public class Core {
 	
@@ -23,7 +25,7 @@ public class Core {
 		}
 	}
 	
-	public void start() {
+	public void start() throws DocumentException, Exception {
 		try {
 			grid = new Grid();
 			grid.init("resources/grids/grid"+gridId+".txt");
@@ -38,11 +40,10 @@ public class Core {
 			long startTime = System.currentTimeMillis();
 			
 			generate();
-			
 			long stopTime = System.currentTimeMillis();
 //			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
 			System.out.println(tryCounter+" "+(stopTime - startTime));
-			
+			PDF pdf = new PDF(this.grid);
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	
 		} catch (IOException e) {
@@ -80,10 +81,10 @@ public class Core {
 			for (int i = 0; i < words.size(); i++) {
 				this.grid.setWorToColumn(words.get(i), longest);
 				tryCounter++;
-//				if(isNotFillable(longest)) {
-//					this.grid.clearColumn(words.get(i), longest);
-//					continue;
-//				}
+				if(isNotFillable(longest)) {
+					this.grid.clearColumn(words.get(i), longest);
+					continue;
+				}
 //				GUI.refresh(this.grid);
 				generate();
 				if(end) {
@@ -113,10 +114,10 @@ public class Core {
 				this.grid.setWorToColumn(words.get(i), bestColumn);
 				tryCounter++;
 //				GUI.refresh(this.grid);
-//				if(isNotFillable(bestColumn)) {
-//					this.grid.clearColumn(words.get(i), bestColumn);
-//					continue;
-//				}
+				if(isNotFillable(bestColumn)) {
+					this.grid.clearColumn(words.get(i), bestColumn);
+					continue;
+				}
 //				GUI.refresh(this.grid);
 				generate();
 				if(end) {
