@@ -15,7 +15,7 @@ public class Main {
 	 */
 	
 	public static void main(String[] args) throws DocumentException, Exception {
-		int type = 4;
+		int type = 2;
 		
 		Core c = new Core();
 		

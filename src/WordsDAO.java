@@ -11,13 +11,13 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 public class WordsDAO {
 	private int[] lengthStat;
-	private String dblang = "enghun";
+	private String dblang = "test";
 	private static String dbtable = "words";
 	private Connection connection = null;
 	private Connection memoryConnection = null;
 	
 	private static final String SQL_createTable = "CREATE TABLE words (" +
-														"id integer primary key, " +
+														"id integer, " +
 														"answer varchar(19), " +
 														"clue varchar(255)," +
 														"frequency integer, " +
@@ -110,8 +110,8 @@ public class WordsDAO {
 	private ArrayList<Word> selectFromDatabase(int length, int count) {
 		Statement statement = null;
 		ArrayList<Word> words = new ArrayList<Word>();
-		count *= Settings.MAX_WORD_COUNT;
-		String SQL = "SELECT * FROM "+dbtable+" WHERE length = "+length+" GROUP BY answer ORDER BY RANDOM() LIMIT "+count;
+		count = Settings.MAX_WORD_COUNT;
+		String SQL = "SELECT * FROM "+dbtable+"";
 		try {
 			connectToDatabase();
 			statement = connection.createStatement();
@@ -158,7 +158,9 @@ public class WordsDAO {
 			if(lengthStat[i] != 0) {
 				ArrayList<Word> words = selectFromDatabase(i, lengthStat[i]);
 				
+				int index = 0;
 				for (Iterator<Word> iterator = words.iterator(); iterator.hasNext();) {
+					index++;
 					Word w = (Word) iterator.next();
 						SQL_insertIntoMemory = "insert into words (id, answer, clue, frequency, length, ";
 					for (j = 1; j < w.getLength(); j++) {
@@ -167,7 +169,7 @@ public class WordsDAO {
 
 					SQL_insertIntoMemory += "c"+j+") VALUES ( ";
 					
-					SQL_insertIntoMemory += w.getId() + ", ";
+					SQL_insertIntoMemory += index + ", ";
 					SQL_insertIntoMemory += "'" + w.getAnswer() + "', ";
 					SQL_insertIntoMemory += "'" + StringEscapeUtils.escapeSql(w.getClue()) + "', ";
 					SQL_insertIntoMemory += w.getFreq() + ", ";

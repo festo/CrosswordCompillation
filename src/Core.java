@@ -33,7 +33,7 @@ public class Core {
 //			GUI.createAndShowGUI(grid);
 			
 			words = new WordsDAO();
-			words.setLang(this.lang);
+//			words.setLang(this.lang);
 			words.setLengthStat(grid.getlengthStat());
 			words.fillTheMemory();
 			
@@ -43,7 +43,7 @@ public class Core {
 			long stopTime = System.currentTimeMillis();
 //			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
 			System.out.println(tryCounter+" "+(stopTime - startTime));
-			PDF pdf = new PDF(this.grid);
+//			PDF pdf = new PDF(this.grid);
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	
 		} catch (IOException e) {
@@ -105,8 +105,8 @@ public class Core {
 		Column bestColumn = getBestColumn();
 		
 		// Lekerjuk a beleillesztheto szavakat
-		words = getBestsWord(bestColumn);
-//		words = getBestsWordWithLookAhead(bestColumn);
+//		words = getBestsWord(bestColumn);
+		words = getBestsWordWithLookAhead(bestColumn);
 		
 		for (int i = 0; i < words.size(); i++) {
 			if( !this.grid.isUsedWord(words.get(i)) ) {
