@@ -40,7 +40,7 @@ public class PDF {
 		buf.append("</table></div>");
 		buf.append("<div id='clues'><table id='clues-table'><tr><th>Fuggõleges</th><th>Vízszintes</th></tr><tr><td>");
 		// A függőleges szavak
-		buf.append(g.getVertivalHTML());
+		buf.append(g.getVerticalHTML());
 		buf.append("</td><td>");
 		// A vízszintes szavak
 		buf.append(g.getHorisontalHTML());

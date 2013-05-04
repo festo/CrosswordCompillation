@@ -1,7 +1,12 @@
 import java.io.*; 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.lowagie.text.List;
 
 
 /**
@@ -88,10 +93,10 @@ public class Grid {
 			c = this.columns.get(i);
 			x = c.getStartX();
 			y = c.getStartY();
-			if(indexes[x][y] == 0) { // beálítom a hasáb indexét, ha már azon a ponton kezdődik egy másik akkor nem írom felül, mert az biztos ellentétes orientáltságú
-				indexes[x][y] = count;
-				count++;
-			}
+//			if(indexes[x][y] == 0) { // beálítom a hasáb indexét, ha már azon a ponton kezdődik egy másik akkor nem írom felül, mert az biztos ellentétes orientáltságú
+//				indexes[x][y] = count;
+//				count++;
+//			}
 			// elmentem a hasáb négyzeteit a rácsba, külün, külön belácoom.
 			// Elvileg nemcsak 2D-re működne, azért lett így megalkotva
 			for (int j = 0; j < c.getLength(); j++) {
@@ -105,6 +110,26 @@ public class Grid {
 				} else {
 					y++;
 				}
+			}
+		}
+		
+		count = 1;
+		pair = new int[2]; 
+		for (int i = 0; i < this.width; i++) {
+			for (int j = 0; j < this.height; j++) {
+				if (gridMatrix[i][j].size() > 0) {
+					for (int k = 0; k < gridMatrix[i][j].size(); k++) {
+						pair = gridMatrix[i][j].get(k);
+						// Az elso betuje, ergo itt kezdodik a hasab
+						if(pair[1] == 0) {
+							if(indexes[i][j] == 0) { // beálítom a hasáb indexét, ha már azon a ponton kezdődik egy másik akkor nem írom felül, mert az biztos ellentétes orientáltságú
+								indexes[i][j] = count;
+								count++;
+							}
+						}
+					}
+				}
+				
 			}
 		}
 		
@@ -446,25 +471,34 @@ public class Grid {
 	 * Visszaadja a függőlegesen felsorot szavakat egy HTML táblázatban a PDF generáláshoz
 	 * @return String
 	 */
-	public String getVertivalHTML() {
+	public String getVerticalHTML() {
+		Map<Integer, Column> treeMap = new TreeMap<Integer, Column>();
+		Column c;
 		String html = "";
 		int x,y;
 		for (int i = 0; i < columns.size(); i++) {
 			if(columns.get(i).isVertical()) {
-				html += "<tr>";
-				
-				html += "<td>";
-				x = columns.get(i).getStartX();
-				y = columns.get(i).getStartY();
-				html += indexes[x][y]+".";
-				html += "</td>";
-				
-				html += "<td>";
-				html += columns.get(i).getWord().getClue();
-				html += "</td>";
-				html += "</tr>";
+				c = columns.get(i);
+				x = c.getStartX();
+				y = c.getStartY();
+				treeMap.put(indexes[x][y], c);
 			}
 		}
+				
+		for (Map.Entry entry : treeMap.entrySet()) {
+			c = (Column) entry.getValue();
+			html += "<tr>";
+			
+			html += "<td>";
+			html += (Integer) entry.getKey()+".";
+			html += "</td>";
+			
+			html += "<td>";
+			html += c.getWord().getClue();
+			html += "</td>";
+			html += "</tr>";
+		}
+		
 		return html;
 	}
 	
@@ -473,23 +507,31 @@ public class Grid {
 	 * @return String
 	 */
 	public String getHorisontalHTML() {
+		Map<Integer, Column> treeMap = new TreeMap<Integer, Column>();
+		Column c;
 		String html = "";
 		int x,y;
 		for (int i = 0; i < columns.size(); i++) {
 			if(!columns.get(i).isVertical()) {
-				html += "<tr>";
-				
-				html += "<td>";
-				x = columns.get(i).getStartX();
-				y = columns.get(i).getStartY();
-				html += indexes[x][y]+".";
-				html += "</td>";
-				
-				html += "<td>";
-				html += columns.get(i).getWord().getClue();
-				html += "</td>";
-				html += "</tr>";
+				c = columns.get(i);
+				x = c.getStartX();
+				y = c.getStartY();
+				treeMap.put(indexes[x][y], c);
 			}
+		}
+				
+		for (Map.Entry entry : treeMap.entrySet()) {
+			c = (Column) entry.getValue();
+			html += "<tr>";
+			
+			html += "<td>";
+			html += (Integer) entry.getKey()+".";
+			html += "</td>";
+			
+			html += "<td>";
+			html += c.getWord().getClue();
+			html += "</td>";
+			html += "</tr>";
 		}
 		return html;
 	}
