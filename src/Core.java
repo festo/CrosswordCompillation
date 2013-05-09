@@ -105,8 +105,8 @@ public class Core {
 		Column bestColumn = getBestColumn();
 		
 		// Lekerjuk a beleillesztheto szavakat
-//		words = getBestsWord(bestColumn);
-		words = getBestsWordWithLookAhead(bestColumn);
+		words = getBestsWord(bestColumn);
+//		words = getBestsWordWithLookAhead(bestColumn);
 		
 		for (int i = 0; i < words.size(); i++) {
 			if( !this.grid.isUsedWord(words.get(i)) ) {
