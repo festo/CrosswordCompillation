@@ -50,8 +50,16 @@ public class Core {
 			generate(); // generálás
 			
 			long stopTime = System.currentTimeMillis(); // A generálás vége
-			// A felhasználó értesítése
-			GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
+			if(this.grid.isFull()) {
+				// A felhasználó értesítése
+				GUI.end(this.grid, (stopTime - startTime), tryCounter, this.grid.getWordsDifficulty());
+			} else {
+				GUI.fail();
+			}
+			
+			words = null;
+			grid = null;
+			System.gc();
 			
 		} catch(SQLException e) {
 		      System.err.println(e.getMessage());	

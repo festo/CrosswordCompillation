@@ -218,4 +218,16 @@ public class GUI extends JFrame implements ActionListener  {
 	public void actionPerformed(ActionEvent e) {
 	}
 
+	/**
+	 * Ha nem sikerült a generálás 
+	 */
+	public static void fail() {
+		JOptionPane.showMessageDialog(frame, "A generálás nem sikerült, kérem próbálja meg újra!");
+		
+		frame.setVisible(false);
+        MainGUI.stopGenerate();
+        return;
+		
+	}
+
 }
