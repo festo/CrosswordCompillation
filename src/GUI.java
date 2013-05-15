@@ -112,7 +112,7 @@ public class GUI extends JFrame implements ActionListener  {
 		Date date = new Date(timestamp);
 		DateFormat formatter = new SimpleDateFormat("mm:ss:SSS");
 		String dateFormatted = formatter.format(date);
-     	int n = JOptionPane.showOptionDialog(frame, "A Generálás kész!\nFutásidő: "+dateFormatted+" (perc)\nBeszúrások száma: "+tryCounter+"\nNeézség: "+d+"\nEl akarod menteni?", "Kész!", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null, options, options[0]); 
+     	int n = JOptionPane.showOptionDialog(frame, "A Generálás kész!\nFutásidő: "+dateFormatted+" (perc)\nBeszúrások száma: "+tryCounter+"\nNehézség: "+d+"\nEl akarod menteni?", "Kész!", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null, options, options[0]); 
         if(n != JOptionPane.OK_OPTION){
             frame.setVisible(false);
             MainGUI.stopGenerate();
